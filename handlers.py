@@ -10,11 +10,10 @@ def on_start_command(update, context):
 def on_guess_command(update, context):
     print('Guess event message received!')
     print(f'update: {update}')
+    print(f'context.user_data: {context.user_data}')
     if 'magic' not in context.user_data:
-        magic_string = gen_magic_string()
-        context.user_data['magic'] = magic_string
-    else:
-        magic_string = context.user_data['magic']
+        context.user_data['magic'] = gen_magic_string()
+    magic_string = context.user_data['magic']
     print(f'magic number: {magic_string}')
     args = context.args
     print(f'context.args: {args}')
