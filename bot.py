@@ -4,6 +4,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import Config
 from handlers import on_start_command, on_guess_command, on_text_message
 
+
 logging.basicConfig(filename='bot.log',
                     format='[%(asctime)s] [%(levelname)s] => %(message)s',
                     level=logging.INFO)

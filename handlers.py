@@ -1,4 +1,4 @@
-from utils import gen_magic_number, get_bulls_cows_reply
+from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
 
 
 def on_start_command(update, context):
@@ -11,27 +11,23 @@ def on_guess_command(update, context):
     print('Guess event message received!')
     print(f'update: {update}')
     if 'magic' not in context.user_data:
-        magic_number = gen_magic_number()
-        context.user_data['magic'] = magic_number
+        magic_string = gen_magic_string()
+        context.user_data['magic'] = magic_string
     else:
-        magic_number = context.user_data['magic']
-    print(f'magic number: {magic_number}')
+        magic_string = context.user_data['magic']
+    print(f'magic number: {magic_string}')
     args = context.args
-    print(f'context.args: {args} {(len(args[0]), args[0][0]) if args else None}')
-    if args and len(args[0]) == 4 and args[0][0] != '0':
-        try:
-            user_number = int(args[0])
-            print(f'user_number: {user_number}, magic_number: {magic_number}')
-            bulls_cows_reply = get_bulls_cows_reply(user_number, magic_number)
-            message = f'{bulls_cows_reply}'
-            if bulls_cows_reply[0] == '4':
-                context.user_data['magic'] = gen_magic_number()
-                message += ' Guessed right! The new number is guessed.'
-
-        except (TypeError, ValueError):
-            message = 'Not a integer!'
+    print(f'context.args: {args}')
+    if args and len(args[0]) == 4 and is_numeric(args[0]):
+        user_string = args[0]
+        print(f'user_string: {user_string}, magic_string: {magic_string}')
+        bulls_cows_reply = get_bulls_cows_reply(user_string, magic_string)
+        message = f'{bulls_cows_reply}'
+        if bulls_cows_reply[0] == '4':
+            context.user_data['magic'] = gen_magic_string()
+            message += ' Guessed right! The new string is guessed.'
     else:
-        message = 'Enter 4-digit integer!'
+        message = 'Enter string of 4 digits!'
     update.message.reply_text(message)
 
 
