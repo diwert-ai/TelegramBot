@@ -1,5 +1,6 @@
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
 from config import Config
 
 logging.basicConfig(filename='bot.log',
