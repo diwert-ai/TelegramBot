@@ -1,5 +1,5 @@
 import logging
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import Config
 
 logging.basicConfig(filename='bot.log',
@@ -13,10 +13,17 @@ def on_start_command(update, context):
     update.message.reply_text(f'Hi, {update.message.chat.username}!')
 
 
+def on_text_command(update, context):
+    text = update.message.text
+    print(text)
+    update.message.reply_text(text)
+
+
 def main():
     bot = Updater(token=Config.token)
     dp = bot.dispatcher
     dp.add_handler(CommandHandler('start', on_start_command))
+    dp.add_handler(MessageHandler(Filters.text, on_text_command))
 
     logging.info('Bot run')
     bot.start_polling()
