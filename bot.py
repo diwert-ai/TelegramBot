@@ -14,7 +14,7 @@ def on_start_command(update, context):
     update.message.reply_text(f'Hi, {update.message.chat.username}!')
 
 
-def on_text_command(update, context):
+def on_text_message(update, context):
     text = update.message.text
     print(text)
     update.message.reply_text(text)
@@ -24,7 +24,7 @@ def main():
     bot = Updater(token=Config.token)
     dp = bot.dispatcher
     dp.add_handler(CommandHandler('start', on_start_command))
-    dp.add_handler(MessageHandler(Filters.text, on_text_command))
+    dp.add_handler(MessageHandler(Filters.text, on_text_message))
 
     logging.info('Bot run')
     bot.start_polling()
