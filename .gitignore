@@ -1,4 +1,5 @@
 config.py
-bot.log
+*.log
 .idea/
 __pycache__/
+env/
