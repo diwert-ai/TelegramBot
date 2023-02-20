@@ -17,7 +17,7 @@ def main():
     dp.add_handler(CommandHandler('g', on_guess_command))
     dp.add_handler(MessageHandler(Filters.text, on_text_message))
 
-    logging.info('Bot run')
+    logging.info('Bot is running...')
     bot.start_polling()
     bot.idle()
 
