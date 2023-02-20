@@ -24,7 +24,8 @@ def on_guess_command(update, context):
         message = f'{bulls_cows_reply}'
         if bulls_cows_reply[0] == '4':
             del context.user_data['magic']
-            message += ' Guessed right!'
+            message += ' Guessed right! 👍'
+
     else:
         message = 'Enter string of 4 digits!'
     update.message.reply_text(message)
