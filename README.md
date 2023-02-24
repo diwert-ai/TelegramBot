@@ -18,4 +18,6 @@ class Config:
 2. `/g [4-digits string - user's guess]` - Bot plays a game of bulls and cows. The bot guesses a four-digit number and returns
 the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is
 the number of cows.
-3. `/ng [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
+3. `/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
+4. `/decode [numeric code]` - The bot returns the most likely decoding of the number string.
+Each digit is recoded according to the rules of the keypad of a pushbutton phone.
