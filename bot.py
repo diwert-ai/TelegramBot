@@ -11,7 +11,7 @@ logging.basicConfig(filename='bot.log',
 
 
 def main():
-    bot = Updater(token=Config.token)
+    bot = Updater(token=Config.telegram_bot_token)
     dp = bot.dispatcher
     dp.add_handler(CommandHandler('start', on_start_command))
     dp.add_handler(CommandHandler('g', on_guess_command))
