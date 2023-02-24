@@ -12,3 +12,10 @@ class Config:
     token = 'bot key received at registration'
 ```
 6. Run bot (in virtual environment): `python bot.py`
+
+## Bot commands
+1. `/start` - The bot responds with a greeting, using the username.
+2. `/g [4-digits string - user's guess]` - Bot plays a game of bulls and cows. The bot guesses a four-digit number and returns
+the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is
+the number of cows.
+3. `/ng [n-gramm]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
