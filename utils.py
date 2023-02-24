@@ -2,6 +2,7 @@ from random import choice
 from string import digits
 from requests import get
 from urllib import parse
+from itertools import product
 
 
 def is_numeric(string):
@@ -65,3 +66,35 @@ def run_query(query, start_year=2000,
                                )
 
     return return_data
+
+
+# соответствие цифр и букв на кнопочном телефоне
+mapping = {
+           '2': "abc",
+           '3': "def",
+           '4': "ghi",
+           '5': "jkl",
+           '6': "mno",
+           '7': "pqrs",
+           '8': "tuv",
+           '9': "wxyz"}
+
+
+# возвращает возможные комбинации по набору цифр
+def letter_combinations(numeric_code):
+    if not numeric_code:
+        return []
+    return list(map(''.join, product(*tuple(map(lambda x: mapping[x], numeric_code)))))
+
+
+# возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
+def top_k(combs, k=5):
+    combs_stat = []
+    for comb in combs:
+        try:
+            stat = run_query(comb)[0][1]
+        except:
+            stat = None
+        combs_stat.append((comb, sum(stat) / len(stat) if stat else 0))
+
+    return sorted(combs_stat, key=lambda x: x[1], reverse=True)[:k]
