@@ -26,9 +26,7 @@ def gen_magic_string():
 
 
 # https://www.geeksforgeeks.org/scrape-google-ngram-viewer-using-python/
-def run_query(query, start_year=2000,
-              end_year=2019, corpus=26,
-              smoothing=0):
+def run_query(query, start_year=2000, end_year=2019, corpus=26, smoothing=0):
     # converting a regular string to the standard URL format
     # eg: "geeks for,geeks" will convert to "geeks%20for%2Cgeeks"
     query = parse.quote(query)
