@@ -3,6 +3,9 @@ from string import digits
 from requests import get, JSONDecodeError
 from urllib import parse
 from itertools import product
+import sqlite3
+
+from config import Config
 
 
 def is_numeric(string):
@@ -38,25 +41,50 @@ def run_query(query, start_year=2000, end_year=2019, corpus=26, smoothing=0):
     return get(url).json()
 
 
+def db_insert_ngrams(data):
+    with sqlite3.connect(Config.db_path) as db:
+        cursor = db.cursor()
+        cursor.executemany("INSERT INTO ngrams(ngram, prob) VALUES(?, ?)", data)
+
+
+def db_select_ngrams(data):
+    with sqlite3.connect(Config.db_path) as db:
+        cursor = db.cursor()
+        placeholders = '('+','.join('?' for _ in range(len(data)))+')'
+        query = "SELECT ngram, prob FROM ngrams WHERE ngram IN " + placeholders
+        result = cursor.execute(query, data)
+
+    return result.fetchall()
+
+
 # возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
 def top_k_ngrams(numeric_code, k=5):
     mapping = {'2': "abc", '3': "def", '4': "ghi", '5': "jkl", '6': "mno", '7': "pqrs", '8': "tuv", '9': "wxyz"}
     ngrams = list(map(''.join, product(*tuple(map(lambda x: mapping[x], numeric_code)))))
-    ngrams_stat, ngrams_num, chunk_size = [], len(ngrams), 512
-    print(f'ngrams total: {ngrams_num},  chunk size: {chunk_size}')
-    for chunk_start in range(0, ngrams_num, chunk_size):
-        print(f'processing ngrams from {chunk_start} to {chunk_start + chunk_size}...')
-        request = ','.join(ngrams[chunk_start:chunk_start + chunk_size])
-        try:
-            data = run_query(request)
-        except JSONDecodeError:
-            print('JSONDecodeError is appeared!')
-            data = None
+    print('Trying to get statistics from the database...', end=' ')
+    ngrams_stat = db_select_ngrams(ngrams)
+    if not ngrams_stat:
+        print('data not found! :(')
+        print('Trying to retrieve data from Google Ngram Viewer service...')
+        ngrams_num, chunk_size = len(ngrams), 512
+        print(f'ngrams total: {ngrams_num},  chunk size: {chunk_size}')
+        for chunk_start in range(0, ngrams_num, chunk_size):
+            print(f'Retrieving ngrams from {chunk_start} to {chunk_start + chunk_size}...')
+            request = ','.join(ngrams[chunk_start:chunk_start + chunk_size])
+            try:
+                data = run_query(request)
+            except JSONDecodeError:
+                print('JSONDecodeError is appeared!')
+                data = None
 
-        for num, rec in enumerate(data, start=1):
-            ngram, stat = rec['ngram'], rec['timeseries']
-            freq = sum(stat) / len(stat) if stat else 0
-            print(f'#{num} stats for "{rec["ngram"]}" is {freq}')
-            ngrams_stat.append((ngram, freq))
-    print(f'ngrams with stats total: {len(ngrams_stat)}')
+            for num, rec in enumerate(data, start=1):
+                ngram, stat = rec['ngram'], rec['timeseries']
+                freq = sum(stat) / len(stat) if stat else 0
+                print(f'#{num} stats for "{rec["ngram"]}" is {freq}')
+                ngrams_stat.append((ngram, freq))
+        db_insert_ngrams(ngrams_stat)
+    else:
+        print('ok!')
+    print(f'ngrams with stats total: {len(ngrams_stat)}, ngrams total: {len(ngrams)}')
+
     return sorted(ngrams_stat, key=lambda x: x[1], reverse=True)[:k]
