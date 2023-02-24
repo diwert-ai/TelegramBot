@@ -1,4 +1,4 @@
-from utils import gen_magic_string, get_bulls_cows_reply, is_numeric, run_query, letter_combinations, top_k
+from utils import gen_magic_string, get_bulls_cows_reply, is_numeric, run_query,  top_k_ngrams
 
 
 def on_start_command(update, context):
@@ -38,7 +38,7 @@ def on_ngram_command(update, context):
     if args:
         user_string = args[0]
         print(f'user_string: {user_string}')
-        stat = run_query(user_string)[0][1]
+        stat = run_query(user_string)
     else:
         stat = None
 
@@ -51,8 +51,7 @@ def on_decode_command(update, context):
     print(f'args: {args}')
     if args and is_numeric(user_string := args[0]) and ('0' not in user_string) and ('1' not in user_string):
         print(f'user_string: {user_string}')
-        top = top_k(letter_combinations(user_string))
-        message = ', '.join(ngram[0] for ngram in top)
+        message = ', '.join(ngram[0] for ngram in top_k_ngrams(user_string))
     else:
         message = 'Code must be numeric without `0` and `1` characters!'
 
