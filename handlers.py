@@ -52,7 +52,7 @@ def on_decode_command(update, context):
     if args and is_numeric(user_string := args[0]) and ('0' not in user_string) and ('1' not in user_string):
         print(f'user_string: {user_string}')
         top = top_k(letter_combinations(user_string))
-        message = f'{list(ngram[0] for ngram in top)}'
+        message = ', '.join(ngram[0] for ngram in top)
     else:
         message = 'Code must be numeric without `0` and `1` characters!'
 
