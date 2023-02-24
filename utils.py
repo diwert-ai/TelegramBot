@@ -57,6 +57,6 @@ def top_k_ngrams(numeric_code, k=5):
             ngram, stat = rec['ngram'], rec['timeseries']
             freq = sum(stat) / len(stat) if stat else 0
             print(f'#{num} stats for "{rec["ngram"]}" is {freq}')
-            ngrams_stat.append((ngram, sum(stat) / len(stat) if stat else 0))
+            ngrams_stat.append((ngram, freq))
     print(f'ngrams with stats total: {len(ngrams_stat)}')
     return sorted(ngrams_stat, key=lambda x: x[1], reverse=True)[:k]
