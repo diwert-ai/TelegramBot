@@ -76,7 +76,6 @@ def top_k_ngrams(numeric_code, k=5):
             except JSONDecodeError:
                 print('JSONDecodeError is appeared!')
                 data = None
-
             for num, rec in enumerate(data, start=1):
                 ngram, stat = rec['ngram'], rec['timeseries']
                 freq = sum(stat) / len(stat) if stat else 0
