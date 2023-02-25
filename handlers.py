@@ -1,5 +1,6 @@
 from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
 from utils import run_google_ngrams_query,  top_k_ngrams, get_news
+from utils import get_arxiv_info
 
 
 def on_start_command(update, context):
@@ -47,7 +48,7 @@ def on_ngram_command(update, context):
 
 
 def on_decode_command(update, context):
-    print('Ngram event message received!')
+    print('Decode event message received!')
     args = context.args
     print(f'args: {args}')
     if args and is_numeric(user_string := args[0]) and ('0' not in user_string) and ('1' not in user_string):
@@ -60,13 +61,27 @@ def on_decode_command(update, context):
 
 
 def on_news_command(update, context):
-    print('Ngram event message received!')
+    print('News event message received!')
     args = context.args
     print(f'args: {args}')
     if args:
         user_string = ' '.join(args)
         print(f'user_string: {user_string}')
         message = get_news(user_string)
+    else:
+        message = 'Enter topic: /news [topic]!'
+
+    update.message.reply_text(message, parse_mode='html')
+
+
+def on_arxiv_command(update, context):
+    print('Arxiv event message received!')
+    args = context.args
+    print(f'args: {args}')
+    if args:
+        user_string = ' '.join(args)
+        print(f'user_string: {user_string}')
+        message = get_arxiv_info(user_string)
     else:
         message = 'Enter topic: /news [topic]!'
 

@@ -4,6 +4,7 @@ from requests import get, JSONDecodeError
 from urllib import parse
 from itertools import product
 import sqlite3
+import arxiv
 
 from config import Config
 
@@ -99,8 +100,6 @@ def run_newsapi_query(query, from_date='2023-02-01', sort_by='relevancy', lang='
           + '&language=' + lang \
           + '&apiKey=' + Config.news_api_key
 
-    print(url)
-
     return get(url).json()
 
 
@@ -112,3 +111,19 @@ def get_news(topic):
         message.append(f'<a href="{url}">{link}</a>')
         message.append('---------------------------')
     return '\n'.join(message) if message else 'no news on this topic'
+
+
+def get_arxiv_info(query):
+    search = arxiv.Search(
+        query=query,
+        max_results=5,
+        sort_by=arxiv.SortCriterion.SubmittedDate
+    )
+    message = []
+    for result in search.results():
+        authors = ','.join(map(lambda x: x.name, result.authors))
+        link, url = f"{result.published}.{authors}: {result.title}",  f"{result.links[0]}"
+        message.append(f'<a href="{url}">{link}</a>')
+        message.append('---------------------------')
+
+    return '\n'.join(message) if message else 'no articles on this topic'
