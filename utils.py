@@ -29,7 +29,7 @@ def gen_magic_string():
 
 
 # https://www.geeksforgeeks.org/scrape-google-ngram-viewer-using-python/
-def run_query(query, start_year=2000, end_year=2019, corpus=26, smoothing=0):
+def run_google_ngrams_query(query, start_year=2000, end_year=2019, corpus=26, smoothing=0):
     # converting a regular string to the standard URL format
     # eg: "geeks for,geeks" will convert to "geeks%20for%2Cgeeks"
     query = parse.quote(query)
@@ -42,13 +42,13 @@ def run_query(query, start_year=2000, end_year=2019, corpus=26, smoothing=0):
 
 
 def db_insert_ngrams(data):
-    with sqlite3.connect(Config.db_path) as db:
+    with sqlite3.connect(Config.ngrams_db_path) as db:
         cursor = db.cursor()
         cursor.executemany("INSERT INTO ngrams(ngram, prob) VALUES(?, ?)", data)
 
 
 def db_select_ngrams(data):
-    with sqlite3.connect(Config.db_path) as db:
+    with sqlite3.connect(Config.ngrams_db_path) as db:
         cursor = db.cursor()
         placeholders = '('+','.join('?' for _ in range(len(data)))+')'
         query = "SELECT ngram, prob FROM ngrams WHERE ngram IN " + placeholders
@@ -72,7 +72,7 @@ def top_k_ngrams(numeric_code, k=5):
             print(f'Retrieving ngrams from {chunk_start} to {chunk_start + chunk_size}...')
             request = ','.join(ngrams[chunk_start:chunk_start + chunk_size])
             try:
-                data = run_query(request)
+                data = run_google_ngrams_query(request)
             except JSONDecodeError as error:
                 print(f'JSONDecodeError is appeared! {error}')
                 data = None
@@ -87,3 +87,28 @@ def top_k_ngrams(numeric_code, k=5):
     print(f'ngrams with stats total: {len(ngrams_stat)}, ngrams total: {len(ngrams)}')
 
     return sorted(ngrams_stat, key=lambda x: x[1], reverse=True)[:k]
+
+
+def run_newsapi_query(query, from_date='2023-02-01', sort_by='relevancy', lang='ru'):
+    # converting a regular string to the standard URL format
+    # eg: "geeks for,geeks" will convert to "geeks%20for%2Cgeeks"
+    query = parse.quote(query)
+    url = 'https://newsapi.org/v2/everything?q=' + query \
+          + '&from=' + from_date \
+          + '&sortBy=' + sort_by \
+          + '&language=' + lang \
+          + '&apiKey=' + Config.news_api_key
+
+    print(url)
+
+    return get(url).json()
+
+
+def get_news(topic):
+    data, message = run_newsapi_query(topic), []
+    articles = data['articles']
+    for article in articles[:5]:
+        link, url = f"{article['source']['name']}: {article['title']}",  f"{article['url']}"
+        message.append(f'<a href="{url}">{link}</a>')
+        message.append('---------------------------')
+    return '\n'.join(message) if message else 'no news on this topic'
