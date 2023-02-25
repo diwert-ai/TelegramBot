@@ -89,7 +89,7 @@ def top_k_ngrams(numeric_code, k=5):
     return sorted(ngrams_stat, key=lambda x: x[1], reverse=True)[:k]
 
 
-def run_newsapi_query(query, from_date='2023-02-01', sort_by='relevancy', lang='ru'):
+def run_newsapi_query(query, from_date='2023-02-01', sort_by='relevancy', lang='en'):
     # converting a regular string to the standard URL format
     # eg: "geeks for,geeks" will convert to "geeks%20for%2Cgeeks"
     query = parse.quote(query)
