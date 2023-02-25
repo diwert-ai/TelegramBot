@@ -121,8 +121,8 @@ def get_arxiv_info(query):
     )
     message = []
     for result in search.results():
-        authors = ','.join(map(lambda x: x.name, result.authors))
-        link, url = f"{result.published}.{authors}: {result.title}",  f"{result.links[0]}"
+        authors = ', '.join(map(lambda x: x.name, result.authors))
+        link, url = f"{result.published} {authors}: {result.title}",  f"{result.links[0]}"
         message.append(f'<a href="{url}">{link}</a>')
         message.append('---------------------------')
 
