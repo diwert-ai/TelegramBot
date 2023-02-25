@@ -73,8 +73,8 @@ def top_k_ngrams(numeric_code, k=5):
             request = ','.join(ngrams[chunk_start:chunk_start + chunk_size])
             try:
                 data = run_query(request)
-            except JSONDecodeError:
-                print('JSONDecodeError is appeared!')
+            except JSONDecodeError as error:
+                print(f'JSONDecodeError is appeared! {error}')
                 data = None
             for num, rec in enumerate(data, start=1):
                 ngram, stat = rec['ngram'], rec['timeseries']
