@@ -2,9 +2,9 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from config import Config
-from handlers import on_start_command, on_guess_command, on_text_message
+from handlers import on_start_command, on_guess_command, on_echo_command
 from handlers import on_ngram_command, on_decode_command, on_news_command
-from handlers import on_arxiv_command, on_trans_command
+from handlers import on_arxiv_command, on_trans_command, do_translation
 
 
 logging.basicConfig(filename='bot.log',
@@ -17,12 +17,14 @@ def main():
     dp = bot.dispatcher
     dp.add_handler(CommandHandler('start', on_start_command))
     dp.add_handler(CommandHandler('g', on_guess_command))
+    dp.add_handler(CommandHandler('guess', on_guess_command))
     dp.add_handler(CommandHandler('ngram', on_ngram_command))
     dp.add_handler(CommandHandler('decode', on_decode_command))
     dp.add_handler(CommandHandler('news', on_news_command))
     dp.add_handler(CommandHandler('arxiv', on_arxiv_command))
     dp.add_handler(CommandHandler('trans', on_trans_command))
-    dp.add_handler(MessageHandler(Filters.text, on_text_message))
+    dp.add_handler(CommandHandler('echo', on_echo_command))
+    dp.add_handler(MessageHandler(Filters.text, do_translation))
 
     logging.info('Bot is running...')
     bot.start_polling()

@@ -88,6 +88,19 @@ def on_arxiv_command(update, context):
     update.message.reply_text(message, parse_mode='html')
 
 
+def on_echo_command(update, context):
+    print('Echo event message received!')
+    args = context.args
+    print(f'args: {args}')
+    if args:
+        user_string = ' '.join(args)
+        print(f'user_string: {user_string}')
+        message = user_string
+    else:
+        message = 'Enter text please!'
+    update.message.reply_text(message)
+
+
 def on_trans_command(update, context):
     print('Trans event message received!')
     args = context.args
@@ -97,12 +110,13 @@ def on_trans_command(update, context):
         print(f'user_string: {user_string}')
         message = get_translated_text(user_string)
     else:
-        message = 'Enter topic: /news [topic]!'
+        message = 'Enter text to translate!'
 
     update.message.reply_text(message)
 
 
-def on_text_message(update, context):
-    text = update.message.text
-    print(text)
-    update.message.reply_text(text)
+def do_translation(update, context):
+    print('Text message received!')
+    message = get_translated_text(update.message.text)
+    update.message.reply_text(message)
+
