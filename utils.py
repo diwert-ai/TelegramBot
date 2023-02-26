@@ -11,8 +11,8 @@ from telegram import ReplyKeyboardMarkup
 from config import Config
 
 
-def set_up_keyboard():
-    keys = [['news set up', 'arxiv set up']]
+def setup_keyboard():
+    keys = [['news setup', 'arxiv setup']]
     return ReplyKeyboardMarkup(keys)
 
 
