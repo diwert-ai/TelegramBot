@@ -27,7 +27,7 @@ class Config:
 
 ## Bot commands
 1. `/start` - The bot responds with a greeting, using the username.
-2. `/g [4-digits string - user's guess]` - Bot plays a game of bulls and cows. The bot guesses a four-digit number and returns
+2. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit number and returns
 the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is
 the number of cows.
 3. `/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
