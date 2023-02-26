@@ -1,12 +1,23 @@
 from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
-from utils import run_google_ngrams_query,  top_k_ngrams, get_news
-from utils import get_arxiv_info, get_translated_text
+from utils import run_google_ngrams_query, top_k_ngrams, get_news
+from utils import get_arxiv_info, get_translated_text, db_register_user
 
 
 def on_start_command(update, context):
     print('Start event message received!')
     print(f'update: {update}')
-    update.message.reply_text(f'Hi, {update.message.chat.username}!')
+    chat = update.message.chat
+    user_data = {'user_name': chat.username,
+                 'first_name': chat.first_name,
+                 'last_name': chat.last_name}
+    status = db_register_user(user_data)
+    print(f'register status: {status}')
+    if status:
+        message = f'Long time no see! Hi, {chat.username}! 🤝'
+    else:
+        message = f'Sounds like this is your first time here! 🙂 Welcome, {chat.username}! 😉'
+
+    update.message.reply_text(message)
 
 
 def on_guess_command(update, context):
@@ -83,13 +94,13 @@ def on_arxiv_command(update, context):
         print(f'user_string: {user_string}')
         message = get_arxiv_info(user_string)
     else:
-        message = 'Enter topic: /news [topic]!'
+        message = 'Enter topic: /arxiv [topic]!'
 
-    msgs = [message[i:i + 4096] for i in range(0, len(message), 4096)]
+    '''msgs = [message[i:i + 4096] for i in range(0, len(message), 4096)]
     for text in msgs:
-        # update.message.reply_text(text)
-        update.message.reply_text(text, parse_mode='html')
+        update.message.reply_text(text, parse_mode='html')'''
 
+    update.message.reply_text(message, parse_mode='html')
 
 
 def on_echo_command(update, context):
@@ -123,4 +134,3 @@ def do_translation(update, context):
     print('Text message received!')
     message = get_translated_text(update.message.text)
     update.message.reply_text(message)
-

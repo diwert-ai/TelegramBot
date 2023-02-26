@@ -46,18 +46,30 @@ def run_google_ngrams_query(query, start_year=2000, end_year=2019, corpus=26, sm
 def db_insert_ngrams(data):
     with sqlite3.connect(Config.ngrams_db_path) as db:
         cursor = db.cursor()
-        cursor.executemany("INSERT INTO ngrams(ngram, prob) VALUES(?, ?)", data)
+        cursor.executemany('INSERT INTO ngrams(ngram, prob) VALUES(?, ?)', data)
 
 
 def db_select_ngrams(data):
     with sqlite3.connect(Config.ngrams_db_path) as db:
         cursor = db.cursor()
         placeholders = '('+','.join('?' for _ in range(len(data)))+')'
-        query = "SELECT ngram, prob FROM ngrams WHERE ngram IN " + placeholders
+        query = 'SELECT ngram, prob FROM ngrams WHERE ngram IN ' + placeholders
         result = cursor.execute(query, data)
 
     return result.fetchall()
 
+
+def db_register_user(user_data):
+    with sqlite3.connect(Config.user_data_db_path) as db:
+        cursor = db.cursor()
+        query = 'SELECT user_name FROM users WHERE user_name = (?)'
+        user_name, first_name, last_name = user_data['user_name'], user_data['first_name'], user_data['last_name']
+        result = cursor.execute(query, (user_name, )).fetchall()
+        if not result:
+            query = 'INSERT INTO users(user_name, first_name, last_name) VALUES(?, ?, ?)'
+            cursor.execute(query, (user_name, first_name, last_name))
+
+    return result
 
 # возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
 def top_k_ngrams(numeric_code, k=5):
