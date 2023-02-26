@@ -1,5 +1,6 @@
 from telegram import ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler
+from utils import setup_keyboard
 
 
 def sort_up_keyboard():
@@ -20,11 +21,10 @@ def headlines_lang_keyboard():
 
 def news_setup_start(update, context):
     update.message.reply_text("Welcome to news service settings!\n" +
-                              "I'm going to ask you a few questions - pay attention!\n" +
-                              "Let's go!\n"
-                              "1. Specify the date from which the news was published (input format: yyyy-mm-dd)",
-                              reply_markup=ReplyKeyboardRemove()
-                              )
+                              "I'm going to ask you a few questions. - Pay attention!\n" +
+                              "Let's go!")
+    update.message.reply_text("1. Specify the date from which the news was published (format: yyyy-mm-dd)",
+                              reply_markup=ReplyKeyboardRemove())
     return 'date_from'
 
 
@@ -66,7 +66,7 @@ def news_setup_headlines_lang(update, context):
 <b>News language</b>: {user_news_setup['news_lang']}
 <b>Topic language</b>: {user_news_setup['topic_lang']}
 <b>Headlines language</b>: {user_news_setup['headlines_lang']}"""
-    update.message.reply_text(message, parse_mode='html')
+    update.message.reply_text(message, parse_mode='html', reply_markup=setup_keyboard())
 
     return ConversationHandler.END
 
