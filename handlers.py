@@ -79,7 +79,15 @@ def on_news_command(update, context):
     if args:
         user_string = ' '.join(args)
         print(f'user_string: {user_string}')
-        message = get_news(user_string)
+        if 'news_setup' in context.user_data:
+            news_setup = context.user_data['news_setup']
+        else:
+            news_setup = {'date_from': '2023-02-01',
+                          'sort_by': 'relevancy',
+                          'news_lang': 'en',
+                          'topic_lang': 'en',
+                          'headlines_lang': 'ru'}
+        message = get_news(user_string, news_setup)
     else:
         message = 'Enter topic: /news [topic]!'
 
