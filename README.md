@@ -5,7 +5,7 @@ A project task from a python course (HSE DPO program).
 1. Clone repo from GitHub to project folder: `git clone https://github.com/diwert-ai/TelegramBot [project-folder]`
 2. Make virtual environment (with interpreter python 3.10) in project folder (see help here https://docs.python.org/3.10/library/venv.html)
 3. Install requirements (in virtual environment): `pip install -r requirements.txt`
-4. Create sqlite database for ngrams storing with table `ngrams` :
+4. Create sqlite database `ngrams.db` for ngrams storing with table `ngrams` :
 ```
 CREATE TABLE ngrams (
     id    INTEGER    PRIMARY KEY AUTOINCREMENT,
@@ -15,7 +15,7 @@ CREATE TABLE ngrams (
                      DEFAULT (0.0) 
 );
 ```
-5. Create sqlite database for storing user data with table `users`:
+5. Create sqlite database `user_data.db` for storing user data with table `users`:
 ```
 CREATE TABLE users (
     id         INTEGER    PRIMARY KEY AUTOINCREMENT,
