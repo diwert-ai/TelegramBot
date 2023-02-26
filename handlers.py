@@ -85,7 +85,11 @@ def on_arxiv_command(update, context):
     else:
         message = 'Enter topic: /news [topic]!'
 
-    update.message.reply_text(message, parse_mode='html')
+    msgs = [message[i:i + 4096] for i in range(0, len(message), 4096)]
+    for text in msgs:
+        # update.message.reply_text(text)
+        update.message.reply_text(text, parse_mode='html')
+
 
 
 def on_echo_command(update, context):

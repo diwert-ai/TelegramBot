@@ -127,7 +127,7 @@ def get_arxiv_info(query):
         link, url = f"{result.published} {authors}: {result.title}",  f"{result.links[0]}"
         message.append(f'<a href="{url}">{link}</a>')
         message.append(get_translated_text(result.title, destination='ru'))
-        # message.append(get_translated_text(result.summary, destination='ru')) # message too long!
+        # message.append(get_translated_text(result.summary, destination='ru'))
         message.append('---------------------------')
 
     return '\n'.join(message) if message else 'no articles on this topic'
