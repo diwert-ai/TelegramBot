@@ -1,4 +1,5 @@
 from telegram import ReplyKeyboardRemove, ReplyKeyboardMarkup
+from telegram.ext import ConversationHandler
 
 
 def sort_up_keyboard():
@@ -58,9 +59,16 @@ def news_setup_topic_lang(update, context):
 
 def news_setup_headlines_lang(update, context):
     context.user_data['news_setup']['headlines_lang'] = update.message.text
-    update.message.reply_text(context.user_data['news_setup'])
+    user_news_setup = context.user_data['news_setup']
+    message = f"""Your news setup:
+<b>Date from</b>: {user_news_setup['date_from']}
+<b>Sort by</b>: {user_news_setup['sort_by']}
+<b>News language</b>: {user_news_setup['news_lang']}
+<b>Topic language</b>: {user_news_setup['topic_lang']}
+<b>Headlines language</b>: {user_news_setup['headlines_lang']}"""
+    update.message.reply_text(message, parse_mode='html')
 
-    return '?'
+    return ConversationHandler.END
 
 
 def news_setup_fallback(update, context):
