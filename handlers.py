@@ -1,6 +1,6 @@
 from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
 from utils import run_google_ngrams_query,  top_k_ngrams, get_news
-from utils import get_arxiv_info
+from utils import get_arxiv_info, get_translated_text
 
 
 def on_start_command(update, context):
@@ -86,6 +86,20 @@ def on_arxiv_command(update, context):
         message = 'Enter topic: /news [topic]!'
 
     update.message.reply_text(message, parse_mode='html')
+
+
+def on_trans_command(update, context):
+    print('Trans event message received!')
+    args = context.args
+    print(f'args: {args}')
+    if args:
+        user_string = ' '.join(args)
+        print(f'user_string: {user_string}')
+        message = get_translated_text(user_string)
+    else:
+        message = 'Enter topic: /news [topic]!'
+
+    update.message.reply_text(message)
 
 
 def on_text_message(update, context):

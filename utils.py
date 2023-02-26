@@ -5,6 +5,7 @@ from urllib import parse
 from itertools import product
 import sqlite3
 import arxiv
+from googletrans import Translator
 
 from config import Config
 
@@ -127,3 +128,7 @@ def get_arxiv_info(query):
         message.append('---------------------------')
 
     return '\n'.join(message) if message else 'no articles on this topic'
+
+
+def get_translated_text(text):
+    return Translator().translate(text, dest='en').text
