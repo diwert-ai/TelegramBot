@@ -36,8 +36,8 @@ def news_setup_date_from(update, context):
     return 'sort_up'
 
 
-def news_setup_sort_up(update, context):
-    context.user_data['news_setup']['sort_up'] = update.message.text
+def news_setup_sort_by(update, context):
+    context.user_data['news_setup']['sort_by'] = update.message.text
     update.message.reply_text('3. Select a news language',
                               reply_markup=news_lang_keyboard())
     return 'news_lang'
@@ -60,7 +60,7 @@ def news_setup_topic_lang(update, context):
 def news_setup_headlines_lang(update, context):
     context.user_data['news_setup']['headlines_lang'] = update.message.text
     user_news_setup = context.user_data['news_setup']
-    message = f"""Your news setup:
+    message = f"""Thanks! Your news setup:
 <b>Date from</b>: {user_news_setup['date_from']}
 <b>Sort by</b>: {user_news_setup['sort_by']}
 <b>News language</b>: {user_news_setup['news_lang']}

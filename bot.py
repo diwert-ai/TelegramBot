@@ -10,7 +10,7 @@ from handlers import (on_start_command, on_guess_command, on_echo_command,
                       on_arxiv_command, on_trans_command, do_translation)
 
 from news_setup import (news_setup_start, news_setup_date_from,
-                        news_setup_sort_up, news_setup_news_lang,
+                        news_setup_sort_by, news_setup_news_lang,
                         news_setup_topic_lang, news_setup_headlines_lang,
                         news_setup_fallback)
 
@@ -32,7 +32,7 @@ def main():
                                          )
                           ],
             'sort_up': [MessageHandler(Filters.regex('^(relevancy|popularity|publishedAt)$'),
-                                       news_setup_sort_up
+                                       news_setup_sort_by
                                        )
                         ],
             'news_lang': [MessageHandler(Filters.regex('^(ru|en|de|fr|it|es)$'),
