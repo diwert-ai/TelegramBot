@@ -5,7 +5,7 @@ A project task from a python course (HSE DPO program).
 1. Clone repo from GitHub to project folder: `git clone https://github.com/diwert-ai/TelegramBot [project-folder]`
 2. Make virtual environment (with interpreter python 3.10) in project folder (see help here https://docs.python.org/3.10/library/venv.html)
 3. Install requirements (in virtual environment): `pip install -r requirements.txt`
-4. Create sqllite database for ngrams storing with table:
+4. Create sqlite database for ngrams storing with table:
 ```
 CREATE TABLE ngrams (
     id    INTEGER    PRIMARY KEY AUTOINCREMENT,
@@ -15,15 +15,28 @@ CREATE TABLE ngrams (
                      DEFAULT (0.0) 
 );
 ```
-5. Make file `config.py` in project folder
-6. Write to the `config.py`:
+5. Create sqlite database for storing user data with table:
+```
+CREATE TABLE users (
+    id         INTEGER    PRIMARY KEY AUTOINCREMENT,
+    user_name  TEXT (128) NOT NULL
+                          UNIQUE,
+    first_name TEXT (128),
+    last_name  TEXT (128),
+    reg_date              NOT NULL
+                          DEFAULT ( (DATETIME('now') ) ) 
+);
+```
+6. Make file `config.py` in project folder
+7. Write to the `config.py`:
 ```
 class Config:
     telegram_bot_token = 'bot key received at registration'
-    ngrams_db_path = 'path to sqllite for ngrams storing'
+    ngrams_db_path = 'path to sqlite db for ngrams storing'
+    user_data_db_path = 'path to sqlite db for user data storing'
     news_api_key = 'api key for newsapi.org service'
 ```
-7. Run bot (in virtual environment): `python bot.py`
+8. Run bot (in virtual environment): `python bot.py`
 
 ## Bot commands
 1. `/start` - The bot responds with a greeting, using the username.
