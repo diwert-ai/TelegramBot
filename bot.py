@@ -1,15 +1,18 @@
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram.ext import ConversationHandler
+
+from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
+                          ConversationHandler)
 
 from config import Config
-from handlers import on_start_command, on_guess_command, on_echo_command
-from handlers import on_ngram_command, on_decode_command, on_news_command
-from handlers import on_arxiv_command, on_trans_command, do_translation
 
-from news_setup import news_setup_start, news_setup_date_from
-from news_setup import news_setup_sort_up, news_setup_news_lang
-from news_setup import news_setup_topic_lang, news_setup_headlines_lang
+from handlers import (on_start_command, on_guess_command, on_echo_command,
+                      on_ngram_command, on_decode_command, on_news_command,
+                      on_arxiv_command, on_trans_command, do_translation)
+
+from news_setup import (news_setup_start, news_setup_date_from,
+                        news_setup_sort_up, news_setup_news_lang,
+                        news_setup_topic_lang, news_setup_headlines_lang,
+                        news_setup_fallback)
 
 logging.basicConfig(filename='bot.log',
                     format='[%(asctime)s] [%(levelname)s] => %(message)s',
@@ -24,7 +27,10 @@ def main():
             MessageHandler(Filters.regex('^(news setup)$'), news_setup_start)
         ],
         states={
-            'date_from': [MessageHandler(Filters.text, news_setup_date_from)],
+            'date_from': [MessageHandler(Filters.regex(r'^([2][0][0-2]\d-[0-1]\d-[0-3]\d)$'),
+                                         news_setup_date_from
+                                         )
+                          ],
             'sort_up': [MessageHandler(Filters.regex('^(relevancy|popularity|publishedAt)$'),
                                        news_setup_sort_up
                                        )
@@ -37,7 +43,11 @@ def main():
             'headlines_lang': [MessageHandler(Filters.regex('^ru|en$'), news_setup_headlines_lang)],
 
         },
-        fallbacks=[]
+        fallbacks=[
+            MessageHandler(Filters.text | Filters.photo | Filters.video
+                           | Filters.document | Filters.audio | Filters.voice
+                           | Filters.location, news_setup_fallback)
+        ]
     )
     dp.add_handler(news_setup)
     dp.add_handler(CommandHandler('start', on_start_command))

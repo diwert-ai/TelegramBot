@@ -61,3 +61,7 @@ def news_setup_headlines_lang(update, context):
     update.message.reply_text(context.user_data['news_setup'])
 
     return '?'
+
+
+def news_setup_fallback(update, context):
+    update.message.reply_text('Wrong input! Please do it again!')

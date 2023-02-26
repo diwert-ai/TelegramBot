@@ -1,7 +1,7 @@
-from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
-from utils import run_google_ngrams_query, top_k_ngrams, get_news
-from utils import get_arxiv_info, get_translated_text, db_register_user
-from utils import setup_keyboard
+from utils import (gen_magic_string, get_bulls_cows_reply, is_numeric,
+                   run_google_ngrams_query, top_k_ngrams, get_news,
+                   get_arxiv_info, get_translated_text, db_register_user,
+                   setup_keyboard)
 
 
 def on_start_command(update, context):
