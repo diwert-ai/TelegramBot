@@ -35,3 +35,4 @@ the number of cows.
 Each digit is recoded according to the rules of the keypad of a pushbutton phone.
 5.  `/news [topic]` - The bot returns the top 5 news items with a given topic, using the service https://newsapi.org
 6. `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
+7. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
