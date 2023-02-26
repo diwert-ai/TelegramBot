@@ -1,6 +1,7 @@
 from utils import gen_magic_string, get_bulls_cows_reply, is_numeric
 from utils import run_google_ngrams_query, top_k_ngrams, get_news
 from utils import get_arxiv_info, get_translated_text, db_register_user
+from utils import set_up_keyboard
 
 
 def on_start_command(update, context):
@@ -17,7 +18,7 @@ def on_start_command(update, context):
     else:
         message = f'Sounds like this is your first time here! 🙂 Welcome, {chat.username}! 😉'
 
-    update.message.reply_text(message)
+    update.message.reply_text(message, reply_markup=set_up_keyboard())
 
 
 def on_guess_command(update, context):
