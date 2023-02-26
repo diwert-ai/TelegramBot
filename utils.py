@@ -6,8 +6,14 @@ from itertools import product
 import sqlite3
 import arxiv
 from googletrans import Translator
+from telegram import ReplyKeyboardMarkup
 
 from config import Config
+
+
+def set_up_keyboard():
+    keys = [['news set up', 'arxiv set up']]
+    return ReplyKeyboardMarkup(keys)
 
 
 def is_numeric(string):
@@ -70,6 +76,7 @@ def db_register_user(user_data):
             cursor.execute(query, (user_name, first_name, last_name))
 
     return result
+
 
 # возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
 def top_k_ngrams(numeric_code, k=5):
