@@ -1,6 +1,6 @@
 from telegram import ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler
-from utils import setup_keyboard
+from utils import setup_keyboard, db_update_news_setup
 
 
 def sort_up_keyboard():
@@ -59,6 +59,7 @@ def news_setup_topic_lang(update, context):
 
 def news_setup_headlines_lang(update, context):
     context.user_data['news_setup']['headlines_lang'] = update.message.text
+    username = update.message.chat.username
     user_news_setup = context.user_data['news_setup']
     message = f"""Thanks! Your news setup:
 <b>Date from</b>: {user_news_setup['date_from']}
@@ -66,8 +67,9 @@ def news_setup_headlines_lang(update, context):
 <b>News language</b>: {user_news_setup['news_lang']}
 <b>Topic language</b>: {user_news_setup['topic_lang']}
 <b>Headlines language</b>: {user_news_setup['headlines_lang']}"""
+    db_update_news_setup(username, user_news_setup)
     update.message.reply_text(message, parse_mode='html', reply_markup=setup_keyboard())
-
+    update.message.reply_text('News setup have stored to db!')
     return ConversationHandler.END
 
 

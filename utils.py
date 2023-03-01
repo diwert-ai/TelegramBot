@@ -3,6 +3,7 @@ from string import digits
 from requests import get, JSONDecodeError
 from urllib import parse
 from itertools import product
+from datetime import datetime, timedelta
 import sqlite3
 import arxiv
 from googletrans import Translator
@@ -58,7 +59,7 @@ def db_insert_ngrams(data):
 def db_select_ngrams(data):
     with sqlite3.connect(Config.ngrams_db_path) as db:
         cursor = db.cursor()
-        placeholders = '('+','.join('?' for _ in range(len(data)))+')'
+        placeholders = '(' + ','.join('?' for _ in range(len(data))) + ')'
         query = 'SELECT ngram, prob FROM ngrams WHERE ngram IN ' + placeholders
         result = cursor.execute(query, data)
 
@@ -68,14 +69,80 @@ def db_select_ngrams(data):
 def db_register_user(user_data):
     with sqlite3.connect(Config.user_data_db_path) as db:
         cursor = db.cursor()
-        query = 'SELECT user_name FROM users WHERE user_name = (?)'
-        user_name, first_name, last_name = user_data['user_name'], user_data['first_name'], user_data['last_name']
-        result = cursor.execute(query, (user_name, )).fetchall()
-        if not result:
+        query = 'SELECT id FROM users WHERE user_name = (?)'
+        user_name = user_data['user_name']
+        registered = cursor.execute(query, (user_name,)).fetchall()
+        if not registered:
+            first_name, last_name = user_data['first_name'], user_data['last_name']
             query = 'INSERT INTO users(user_name, first_name, last_name) VALUES(?, ?, ?)'
             cursor.execute(query, (user_name, first_name, last_name))
 
-    return result
+    return registered
+
+
+def default_news_setup():
+    return {'date_from': (datetime.today() - timedelta(days=20)).strftime('%Y-%m-%d'),
+            'sort_by': 'relevancy',
+            'topic_lang': 'en',
+            'news_lang': 'en',
+            'headlines_lang': 'ru'}
+
+
+def db_update_news_setup(username, news_setup):
+    """
+    Updates table news_setup if record exists for user, else inserts user's
+    news setup record in this table
+    :param username: Telegram username
+    :param news_setup: User's news setup dictionary
+    :return: None
+    """
+    with sqlite3.connect(Config.user_data_db_path) as db:
+        cursor = db.cursor()
+        query = 'SELECT id FROM users WHERE user_name = (?)'
+        result = cursor.execute(query, (username,)).fetchone()
+        assert result, f'There is no record in table `users` for user {username}!'
+        user_id = result[0]
+        query = 'SELECT id FROM news_setup WHERE user_id = (?)'
+        result = cursor.execute(query, (user_id,)).fetchone()
+        if result:
+            query = '''UPDATE news_setup 
+                       SET date_from = (?),
+                           sort_by = (?),
+                           topic_lang = (?),
+                           news_lang = (?),
+                           headlines_lang = (?)
+                       WHERE user_id = (?)'''
+        else:
+            query = '''INSERT INTO news_setup(date_from, sort_by, topic_lang, news_lang, headlines_lang, user_id)
+                       VALUES(?, ?, ?, ?, ?, ?)'''
+
+        cursor.execute(query, (news_setup['date_from'], news_setup['sort_by'], news_setup['topic_lang'],
+                               news_setup['news_lang'], news_setup['headlines_lang'], user_id))
+
+
+def db_get_news_setup(user_name):
+    """
+    Returns user's news setup dictionary from db if it exists,
+    else returns default news setup.
+    :param user_name: Username in telegram
+    :return: User's news setup dictionary
+    """
+    news_setup = dict()
+    with sqlite3.connect(Config.user_data_db_path) as db:
+        cursor = db.cursor()
+        query = '''SELECT date_from, sort_by, topic_lang, news_lang, headlines_lang
+                   FROM news_setup ns
+                   LEFT JOIN users u on u.id = ns.user_id
+                   WHERE u.user_name = (?)'''
+        result = cursor.execute(query, (user_name,)).fetchone()
+        if result:
+            news_setup = {'date_from': result[0],
+                          'sort_by': result[1],
+                          'topic_lang': result[2],
+                          'news_lang': result[3],
+                          'headlines_lang': result[4]}
+
+    return news_setup if news_setup else default_news_setup()
 
 
 # возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
@@ -135,7 +202,7 @@ def get_news(topic, setup):
     articles = data['articles']
     for article in articles[:5]:
         title = article['title']
-        link, url = f"{article['source']['name']}: {title}",  f"{article['url']}"
+        link, url = f"{article['source']['name']}: {title}", f"{article['url']}"
         message.append(f'<a href="{url}">{link}</a>')
         if headlines_lang != lang:
             title = get_translated_text(title, destination=headlines_lang)
@@ -153,7 +220,7 @@ def get_arxiv_info(query):
     message = []
     for result in search.results():
         authors = ', '.join(map(lambda x: x.name, result.authors))
-        link, url = f"{result.published} {authors}: {result.title}",  f"{result.links[0]}"
+        link, url = f"{result.published} {authors}: {result.title}", f"{result.links[0]}"
         message.append(f'<a href="{url}">{link}</a>')
         message.append(get_translated_text(result.title, destination='ru'))
         # message.append(get_translated_text(result.summary, destination='ru'))
