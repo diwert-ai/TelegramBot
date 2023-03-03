@@ -1,7 +1,8 @@
 from utils import (gen_magic_string, get_bulls_cows_reply, is_numeric,
                    run_google_ngrams_query, top_k_ngrams, get_news,
-                   get_arxiv_info, get_translated_text, db_register_user,
-                   setup_keyboard, db_get_news_setup)
+                   get_arxiv_info, get_translated_text, setup_keyboard)
+
+from userdata_db import UserDataDB
 
 
 def on_start_command(update, context):
@@ -11,14 +12,15 @@ def on_start_command(update, context):
     user_data = {'user_name': chat.username,
                  'first_name': chat.first_name,
                  'last_name': chat.last_name}
-    db_user_status = db_register_user(user_data)
+    user_data_db = UserDataDB()
+    db_user_status = user_data_db.register_user(user_data)
     print(f'register status: {db_user_status}')
     if db_user_status:
         message = f'Long time no see! Hi, {chat.username}! 🤝'
     else:
         message = f'Sounds like this is your first time here! 🙂 Welcome, {chat.username}! 😉'
 
-    context.user_data['news_setup'] = db_get_news_setup(chat.username)
+    context.user_data['news_setup'] = user_data_db.get_news_setup(chat.username)
     update.message.reply_text(message, reply_markup=setup_keyboard())
 
 
@@ -84,7 +86,7 @@ def on_news_command(update, context):
         if 'news_setup' in context.user_data:
             news_setup = context.user_data['news_setup']
         else:
-            news_setup = db_get_news_setup(username)
+            news_setup = UserDataDB().get_news_setup(username)
         message = get_news(user_string, news_setup)
     else:
         message = 'Enter topic: /news [topic]!'

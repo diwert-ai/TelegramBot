@@ -10,6 +10,7 @@ import translators as ts
 from telegram import ReplyKeyboardMarkup
 
 from config import Config
+from ngrams_db import NgramsDB
 
 
 def setup_keyboard():
@@ -50,36 +51,6 @@ def run_google_ngrams_query(query, start_year=2000, end_year=2019, corpus=26, sm
     return get(url).json()
 
 
-def db_insert_ngrams(data):
-    with sqlite3.connect(Config.ngrams_db_path) as db:
-        cursor = db.cursor()
-        cursor.executemany('INSERT INTO ngrams(ngram, prob) VALUES(?, ?)', data)
-
-
-def db_select_ngrams(data):
-    with sqlite3.connect(Config.ngrams_db_path) as db:
-        cursor = db.cursor()
-        placeholders = '(' + ','.join('?' for _ in range(len(data))) + ')'
-        query = 'SELECT ngram, prob FROM ngrams WHERE ngram IN ' + placeholders
-        result = cursor.execute(query, data)
-
-    return result.fetchall()
-
-
-def db_register_user(user_data):
-    with sqlite3.connect(Config.user_data_db_path) as db:
-        cursor = db.cursor()
-        query = 'SELECT id FROM users WHERE user_name = (?)'
-        user_name = user_data['user_name']
-        registered = cursor.execute(query, (user_name,)).fetchall()
-        if not registered:
-            first_name, last_name = user_data['first_name'], user_data['last_name']
-            query = 'INSERT INTO users(user_name, first_name, last_name) VALUES(?, ?, ?)'
-            cursor.execute(query, (user_name, first_name, last_name))
-
-    return registered
-
-
 def default_news_setup():
     return {'date_from': (datetime.today() - timedelta(days=20)).strftime('%Y-%m-%d'),
             'sort_by': 'relevancy',
@@ -88,69 +59,13 @@ def default_news_setup():
             'headlines_lang': 'ru'}
 
 
-def db_update_news_setup(username, news_setup):
-    """
-    Updates table news_setup if record exists for user, else inserts user's
-    news setup record in this table
-    :param username: Telegram username
-    :param news_setup: User's news setup dictionary
-    :return: None
-    """
-    with sqlite3.connect(Config.user_data_db_path) as db:
-        cursor = db.cursor()
-        query = 'SELECT id FROM users WHERE user_name = (?)'
-        result = cursor.execute(query, (username,)).fetchone()
-        assert result, f'There is no record in table `users` for user {username}!'
-        user_id = result[0]
-        query = 'SELECT id FROM news_setup WHERE user_id = (?)'
-        result = cursor.execute(query, (user_id,)).fetchone()
-        if result:
-            query = '''UPDATE news_setup 
-                       SET date_from = (?),
-                           sort_by = (?),
-                           topic_lang = (?),
-                           news_lang = (?),
-                           headlines_lang = (?)
-                       WHERE user_id = (?)'''
-        else:
-            query = '''INSERT INTO news_setup(date_from, sort_by, topic_lang, news_lang, headlines_lang, user_id)
-                       VALUES(?, ?, ?, ?, ?, ?)'''
-
-        cursor.execute(query, (news_setup['date_from'], news_setup['sort_by'], news_setup['topic_lang'],
-                               news_setup['news_lang'], news_setup['headlines_lang'], user_id))
-
-
-def db_get_news_setup(user_name):
-    """
-    Returns user's news setup dictionary from db if it exists,
-    else returns default news setup.
-    :param user_name: Username in telegram
-    :return: User's news setup dictionary
-    """
-    news_setup = dict()
-    with sqlite3.connect(Config.user_data_db_path) as db:
-        cursor = db.cursor()
-        query = '''SELECT date_from, sort_by, topic_lang, news_lang, headlines_lang
-                   FROM news_setup ns
-                   LEFT JOIN users u on u.id = ns.user_id
-                   WHERE u.user_name = (?)'''
-        result = cursor.execute(query, (user_name,)).fetchone()
-        if result:
-            news_setup = {'date_from': result[0],
-                          'sort_by': result[1],
-                          'topic_lang': result[2],
-                          'news_lang': result[3],
-                          'headlines_lang': result[4]}
-
-    return news_setup if news_setup else default_news_setup()
-
-
 # возвращает топ k=5 комбинаций букв (n-грамм) отсортированных по убыванию частоты
 def top_k_ngrams(numeric_code, k=5):
+    ngrams_db = NgramsDB()
     mapping = {'2': "abc", '3': "def", '4': "ghi", '5': "jkl", '6': "mno", '7': "pqrs", '8': "tuv", '9': "wxyz"}
     ngrams = list(map(''.join, product(*tuple(map(lambda x: mapping[x], numeric_code)))))
     print('Trying to get statistics from the database...', end=' ')
-    ngrams_stat = db_select_ngrams(ngrams)
+    ngrams_stat = ngrams_db.select_ngrams(ngrams)
     if not ngrams_stat:
         print('data not found! :(')
         print('Trying to retrieve data from Google Ngram Viewer service...')
@@ -169,7 +84,7 @@ def top_k_ngrams(numeric_code, k=5):
                 freq = sum(stat) / len(stat) if stat else 0
                 print(f'#{num} stats for "{rec["ngram"]}" is {freq}')
                 ngrams_stat.append((ngram, freq))
-        db_insert_ngrams(ngrams_stat)
+        ngrams_db.insert_ngrams(ngrams_stat)
     else:
         print('ok!')
     print(f'ngrams with stats total: {len(ngrams_stat)}, ngrams total: {len(ngrams)}')
