@@ -14,10 +14,6 @@ from news_setup import (news_setup_start, news_setup_date_from,
                         news_setup_topic_lang, news_setup_headlines_lang,
                         news_setup_fallback)
 
-logging.basicConfig(filename='bot.log',
-                    format='[%(asctime)s] [%(levelname)s] => %(message)s',
-                    level=logging.INFO)
-
 
 def main():
     bot = Updater(token=Config.telegram_bot_token)
@@ -67,4 +63,7 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='bot.log',
+                        format='[%(asctime)s] [%(levelname)s] => %(message)s',
+                        level=logging.INFO)
     main()

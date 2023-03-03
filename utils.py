@@ -6,7 +6,7 @@ from itertools import product
 from datetime import datetime, timedelta
 import sqlite3
 import arxiv
-from googletrans import Translator
+import translators as ts
 from telegram import ReplyKeyboardMarkup
 
 from config import Config
@@ -230,4 +230,4 @@ def get_arxiv_info(query):
 
 
 def get_translated_text(text, destination='en'):
-    return Translator().translate(text, dest=destination).text
+    return ts.translate_text(query_text=text, to_language=destination, translator='google')
