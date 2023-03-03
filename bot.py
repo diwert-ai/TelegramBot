@@ -4,15 +4,13 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from config import Config
 from handlers import Handlers
-from news_setup import NewsSetupConversation
 
 
 def main():
     bot = Updater(token=Config.telegram_bot_token)
     dp = bot.dispatcher
     handlers = Handlers()
-    news_setup_handler = NewsSetupConversation().handler()
-    dp.add_handler(news_setup_handler)
+    dp.add_handler(handlers.news_setup_conversation.handler())
     dp.add_handler(CommandHandler('start', handlers.start))
     dp.add_handler(CommandHandler('g', handlers.guess))
     dp.add_handler(CommandHandler('guess', handlers.guess))

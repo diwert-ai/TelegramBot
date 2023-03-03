@@ -4,6 +4,7 @@ from utils import (gen_magic_string, get_bulls_cows_reply, is_numeric,
 from userdata_db import UserDataDB
 from news_engine import NewsAPIEngine
 from google_ngrams_engine import GoogleNgramsEngine
+from news_setup import NewsSetupConversation
 
 
 class Handlers:
@@ -11,6 +12,7 @@ class Handlers:
         self.user_data_db = UserDataDB()
         self.news_engine = NewsAPIEngine()
         self.google_ngrams_engine = GoogleNgramsEngine()
+        self.news_setup_conversation = NewsSetupConversation(self.user_data_db)
 
     def start(self, update, context):
         print('Start event message received!')
@@ -142,3 +144,4 @@ class Handlers:
         print('Text message received!')
         message = get_translated_text(update.message.text)
         update.message.reply_text(message)
+

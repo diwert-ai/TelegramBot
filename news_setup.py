@@ -1,12 +1,11 @@
 from telegram import ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import MessageHandler, Filters, ConversationHandler
 from utils import setup_keyboard
-from userdata_db import UserDataDB
 
 
 class NewsSetupConversation:
-    def __init__(self):
-        self.userdata_db = UserDataDB()
+    def __init__(self, userdata_db):
+        self.userdata_db = userdata_db
 
     @staticmethod
     def sort_up_keyboard():
