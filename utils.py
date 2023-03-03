@@ -4,12 +4,10 @@ from requests import get, JSONDecodeError
 from urllib import parse
 from itertools import product
 from datetime import datetime, timedelta
-import sqlite3
 import arxiv
 import translators as ts
 from telegram import ReplyKeyboardMarkup
 
-from config import Config
 from ngrams_db import NgramsDB
 
 
@@ -90,40 +88,6 @@ def top_k_ngrams(numeric_code, k=5):
     print(f'ngrams with stats total: {len(ngrams_stat)}, ngrams total: {len(ngrams)}')
 
     return sorted(ngrams_stat, key=lambda x: x[1], reverse=True)[:k]
-
-
-def run_newsapi_query(query, date_from='2023-02-01', sort_by='relevancy', lang='en'):
-    # converting a regular string to the standard URL format
-    # eg: "geeks for,geeks" will convert to "geeks%20for%2Cgeeks"
-    query = parse.quote(query)
-    url = 'https://newsapi.org/v2/everything?q=' + query \
-          + '&from=' + date_from \
-          + '&sortBy=' + sort_by \
-          + '&language=' + lang \
-          + '&apiKey=' + Config.news_api_key
-
-    print(url)
-
-    return get(url).json()
-
-
-def get_news(topic, setup):
-    print(setup)
-    date_from, sort_by, lang = setup['date_from'], setup['sort_by'], setup['news_lang']
-    topic_lang, headlines_lang = setup['topic_lang'], setup['headlines_lang']
-    if topic_lang != lang:
-        topic = get_translated_text(topic, destination=lang)
-    data, message = run_newsapi_query(topic, date_from=date_from, sort_by=sort_by, lang=lang), []
-    articles = data['articles']
-    for article in articles[:5]:
-        title = article['title']
-        link, url = f"{article['source']['name']}: {title}", f"{article['url']}"
-        message.append(f'<a href="{url}">{link}</a>')
-        if headlines_lang != lang:
-            title = get_translated_text(title, destination=headlines_lang)
-        message.append(title)
-        # message.append('---------------------------')
-    return '\n'.join(message) if message else 'no news on this topic'
 
 
 def get_arxiv_info(query):

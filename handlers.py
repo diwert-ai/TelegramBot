@@ -1,8 +1,9 @@
 from utils import (gen_magic_string, get_bulls_cows_reply, is_numeric,
-                   run_google_ngrams_query, top_k_ngrams, get_news,
+                   run_google_ngrams_query, top_k_ngrams,
                    get_arxiv_info, get_translated_text, setup_keyboard)
 
 from userdata_db import UserDataDB
+from news_engine import NewsAPIEngine
 
 
 def on_start_command(update, context):
@@ -87,7 +88,7 @@ def on_news_command(update, context):
             news_setup = context.user_data['news_setup']
         else:
             news_setup = UserDataDB().get_news_setup(username)
-        message = get_news(user_string, news_setup)
+        message = NewsAPIEngine().get_news(user_string, news_setup)
     else:
         message = 'Enter topic: /news [topic]!'
 
