@@ -3,30 +3,26 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from config import Config
-
-from handlers import (on_start_command, on_guess_command, on_echo_command,
-                      on_ngram_command, on_decode_command, on_news_command,
-                      on_arxiv_command, on_trans_command, do_translation)
-
+from handlers import Handlers
 from news_setup import NewsSetupConversation
 
 
 def main():
     bot = Updater(token=Config.telegram_bot_token)
     dp = bot.dispatcher
+    handlers = Handlers()
     news_setup_handler = NewsSetupConversation().handler()
     dp.add_handler(news_setup_handler)
-    dp.add_handler(CommandHandler('start', on_start_command))
-    dp.add_handler(CommandHandler('g', on_guess_command))
-    dp.add_handler(CommandHandler('guess', on_guess_command))
-    dp.add_handler(CommandHandler('ngram', on_ngram_command))
-    dp.add_handler(CommandHandler('decode', on_decode_command))
-    dp.add_handler(CommandHandler('news', on_news_command))
-    dp.add_handler(CommandHandler('arxiv', on_arxiv_command))
-    dp.add_handler(CommandHandler('trans', on_trans_command))
-    dp.add_handler(CommandHandler('echo', on_echo_command))
-    dp.add_handler(MessageHandler(Filters.text, do_translation))
-
+    dp.add_handler(CommandHandler('start', handlers.start))
+    dp.add_handler(CommandHandler('g', handlers.guess))
+    dp.add_handler(CommandHandler('guess', handlers.guess))
+    dp.add_handler(CommandHandler('ngram', handlers.ngram))
+    dp.add_handler(CommandHandler('decode', handlers.decode))
+    dp.add_handler(CommandHandler('news', handlers.news))
+    dp.add_handler(CommandHandler('arxiv', handlers.arxiv))
+    dp.add_handler(CommandHandler('trans', handlers.trans))
+    dp.add_handler(CommandHandler('echo', handlers.echo))
+    dp.add_handler(MessageHandler(Filters.text, handlers.translation))
     logging.info('Bot is running...')
     bot.start_polling()
     bot.idle()
