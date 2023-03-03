@@ -1,7 +1,8 @@
-from utils import (is_numeric, get_arxiv_info, get_translated_text, setup_keyboard)
+from utils import is_numeric, get_translated_text, setup_keyboard
 
 from userdata_db import UserDataDB
 from news_engine import NewsAPIEngine
+from arxiv_engine import ArxivEngine
 from google_ngrams_engine import GoogleNgramsEngine
 from news_setup import NewsSetupConversation
 from bullscows_engine import BullsAndCowsEngine
@@ -11,6 +12,7 @@ class Handlers:
     def __init__(self):
         self.user_data_db = UserDataDB()
         self.news_engine = NewsAPIEngine()
+        self.arxiv_engine = ArxivEngine()
         self.google_ngrams_engine = GoogleNgramsEngine()
         self.bulls_cows_engine = BullsAndCowsEngine()
         self.news_setup_conversation = NewsSetupConversation(self.user_data_db)
@@ -105,7 +107,7 @@ class Handlers:
         if args:
             user_string = ' '.join(args)
             print(f'user_string: {user_string}')
-            message = get_arxiv_info(user_string)
+            message = self.arxiv_engine.get_info(user_string)
         else:
             message = 'Enter topic: /arxiv [topic]!'
 
@@ -128,7 +130,8 @@ class Handlers:
             message = 'Enter text please!'
         update.message.reply_text(message)
 
-    def trans(self, update, context):
+    @staticmethod
+    def trans(update, context):
         print('Trans event message received!')
         args = context.args
         print(f'args: {args}')
@@ -141,7 +144,8 @@ class Handlers:
 
         update.message.reply_text(message)
 
-    def translation(self, update, context):
+    @staticmethod
+    def translation(update, context):
         print('Text message received!')
         message = get_translated_text(update.message.text)
         update.message.reply_text(message)
