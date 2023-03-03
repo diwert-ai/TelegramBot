@@ -7,7 +7,7 @@ from ngrams_db import NgramsDB
 
 class GoogleNgramsEngine:
     def __init__(self):
-        pass
+        self.ngrams_db = NgramsDB()
 
     # https://www.geeksforgeeks.org/scrape-google-ngram-viewer-using-python/
     @staticmethod
@@ -23,11 +23,10 @@ class GoogleNgramsEngine:
         return get(url).json()
 
     def top_k_ngrams(self, numeric_code, k=5):
-        ngrams_db = NgramsDB()
         mapping = {'2': "abc", '3': "def", '4': "ghi", '5': "jkl", '6': "mno", '7': "pqrs", '8': "tuv", '9': "wxyz"}
         ngrams = list(map(''.join, product(*tuple(map(lambda x: mapping[x], numeric_code)))))
         print('Trying to get statistics from the database...', end=' ')
-        ngrams_stat = ngrams_db.select_ngrams(ngrams)
+        ngrams_stat = self.ngrams_db.select_ngrams(ngrams)
         if not ngrams_stat:
             print('data not found! :(')
             print('Trying to retrieve data from Google Ngram Viewer service...')
@@ -46,7 +45,7 @@ class GoogleNgramsEngine:
                     freq = sum(stat) / len(stat) if stat else 0
                     print(f'#{num} stats for "{rec["ngram"]}" is {freq}')
                     ngrams_stat.append((ngram, freq))
-            ngrams_db.insert_ngrams(ngrams_stat)
+            self.ngrams_db.insert_ngrams(ngrams_stat)
         else:
             print('ok!')
         print(f'ngrams with stats total: {len(ngrams_stat)}, ngrams total: {len(ngrams)}')
