@@ -1,12 +1,20 @@
 import sqlite3
+from datetime import datetime, timedelta
 
 from config import Config
-from utils import default_news_setup
 
 
 class UserDataDB:
     def __init__(self):
         self.user_data_db_path = Config.user_data_db_path
+
+    @staticmethod
+    def default_news_setup():
+        return {'date_from': (datetime.today() - timedelta(days=20)).strftime('%Y-%m-%d'),
+                'sort_by': 'relevancy',
+                'topic_lang': 'en',
+                'news_lang': 'en',
+                'headlines_lang': 'ru'}
 
     def register_user(self, user_data):
         with sqlite3.connect(self.user_data_db_path) as db:
@@ -74,4 +82,4 @@ class UserDataDB:
                               'news_lang': result[3],
                               'headlines_lang': result[4]}
 
-        return news_setup if news_setup else default_news_setup()
+        return news_setup if news_setup else self.default_news_setup()

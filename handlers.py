@@ -1,10 +1,10 @@
-from utils import (gen_magic_string, get_bulls_cows_reply, is_numeric,
-                   get_arxiv_info, get_translated_text, setup_keyboard)
+from utils import (is_numeric, get_arxiv_info, get_translated_text, setup_keyboard)
 
 from userdata_db import UserDataDB
 from news_engine import NewsAPIEngine
 from google_ngrams_engine import GoogleNgramsEngine
 from news_setup import NewsSetupConversation
+from bullscows_engine import BullsAndCowsEngine
 
 
 class Handlers:
@@ -12,6 +12,7 @@ class Handlers:
         self.user_data_db = UserDataDB()
         self.news_engine = NewsAPIEngine()
         self.google_ngrams_engine = GoogleNgramsEngine()
+        self.bulls_cows_engine = BullsAndCowsEngine()
         self.news_setup_conversation = NewsSetupConversation(self.user_data_db)
 
     def start(self, update, context):
@@ -36,7 +37,7 @@ class Handlers:
         print(f'update: {update}')
         print(f'context.user_data: {context.user_data}')
         if 'magic' not in context.user_data:
-            context.user_data['magic'] = gen_magic_string()
+            context.user_data['magic'] = self.bulls_cows_engine.new_guess()
         magic_string = context.user_data['magic']
         print(f'magic number: {magic_string}')
         args = context.args
@@ -44,7 +45,7 @@ class Handlers:
         if args and len(args[0]) == 4 and is_numeric(args[0]):
             user_string = args[0]
             print(f'user_string: {user_string}, magic_string: {magic_string}')
-            bulls_cows_reply = get_bulls_cows_reply(user_string, magic_string)
+            bulls_cows_reply = self.bulls_cows_engine.get_bulls_and_cows(user_string, magic_string)
             message = f'{bulls_cows_reply}'
             if bulls_cows_reply[0] == '4':
                 del context.user_data['magic']
@@ -144,4 +145,3 @@ class Handlers:
         print('Text message received!')
         message = get_translated_text(update.message.text)
         update.message.reply_text(message)
-
