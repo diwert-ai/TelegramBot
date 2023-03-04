@@ -29,6 +29,9 @@ class NewsAPIEngine:
         if topic_lang != lang:
             topic = get_translated_text(topic, destination=lang)
         data, message = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang), []
+        status = data['status']
+        total_results = data['totalResults']
+        message.append(f'status: {status}\ntotal results: {total_results}')
         articles = data['articles']
         for article in articles[:5]:
             title = article['title']
