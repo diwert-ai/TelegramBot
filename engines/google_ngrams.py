@@ -2,7 +2,7 @@ from itertools import product
 from urllib import parse
 from requests import get, JSONDecodeError
 
-from ngrams_db import NgramsDB
+from db.ngrams_db import NgramsDB
 
 
 class GoogleNgramsEngine:

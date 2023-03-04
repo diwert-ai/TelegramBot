@@ -1,11 +1,11 @@
 from utils import is_numeric, get_translated_text, setup_keyboard
 
-from userdata_db import UserDataDB
-from news_engine import NewsAPIEngine
-from arxiv_engine import ArxivEngine
-from google_ngrams_engine import GoogleNgramsEngine
+from db.userdata_db import UserDataDB
+from engines.bullscows import BullsAndCowsEngine
+from engines.google_ngrams import GoogleNgramsEngine
+from engines.news_api import NewsAPIEngine
+from engines.arxiv_api import ArxivEngine
 from news_setup import NewsSetupConversation
-from bullscows_engine import BullsAndCowsEngine
 
 
 class Handlers:
