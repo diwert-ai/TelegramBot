@@ -5,3 +5,6 @@ __pycache__/
 env/
 venv/
 db/*.db
+db/__pycache__/
+engines/__pycache__/
+*.pyc
