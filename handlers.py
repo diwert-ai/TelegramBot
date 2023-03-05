@@ -124,7 +124,7 @@ class Handlers:
         if news_generator:
             message = next(news_generator)
         else:
-            message = 'The news generator was not created!'
+            message = 'The news generator was not created! Try first `/gnews [topic]` command!'
 
         update.message.reply_text(message, parse_mode='html', reply_markup=gnews_keyboard())
 
