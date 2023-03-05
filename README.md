@@ -56,13 +56,27 @@ class Config:
 8. Run bot (in virtual environment): `python bot.py`
 
 ## Bot commands
-1. `/start` - The bot responds with a greeting, using the username.
-2. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit number and returns
+1. `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
+if not, it registers this user in the sqlite database. A menu appears with two buttons:
+`news setup` and `arxiv setup`. The first launches the conversation to create user parameters for requests 
+to https://newsapi.org (used in the `/news` and `/gnews` commands). The second one is analyzed for queries
+to https://arxiv.org
+(not yet implemented). User parameters are stored in `context.user_data` and stored in the sqlite database.
+2. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit
+number and returns
 the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is
 the number of cows.
 3. `/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
 4. `/decode [numeric code]` - The bot returns the most likely decoding of the number string.
-Each digit is recoded according to the rules of the keypad of a pushbutton phone.
+Each digit is recoded according to the rules of the keypad of a pushbutton phone. The probability is determined by
+the n-gram statistics obtained from the Google Ngram Viewer service. The n-gram stats are saved in a sqlite database,
+which allows you to take the stats from the database instead of making the same queries to the Google Ngram Viewer.
 5.  `/news [topic]` - The bot returns the top 5 news items with a given topic, using the service https://newsapi.org
-6. `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
-7. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
+with the parameters that have been configured in `news setup` conversation
+6.  `/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
+`next 5 news` (gives the next 5 news from the general pool that the https://newsapi.org service has returned) and
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
+`next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
+start with the first news.
+7. `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
+8. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
