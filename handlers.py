@@ -1,4 +1,4 @@
-from utils import is_numeric, get_translated_text, setup_keyboard
+from utils import is_numeric, get_translated_text, setup_keyboard, gnews_keyboard
 
 from db.userdata_db import UserDataDB
 from engines.bullscows import BullsAndCowsEngine
@@ -94,11 +94,47 @@ class Handlers:
                 news_setup = context.user_data['news_setup']
             else:
                 news_setup = self.user_data_db.get_news_setup(username)
-            message = self.news_engine.get_news(user_string, news_setup)
+            message = self.news_engine.get_top5_news(user_string, news_setup)
         else:
             message = 'Enter topic: /news [topic]!'
 
         update.message.reply_text(message, parse_mode='html')
+
+    def gnews(self, update, context):
+        print('News event message received!')
+        args = context.args
+        print(f'args: {args}')
+        if args:
+            user_string = ' '.join(args)
+            username = update.message.chat.username
+            print(f'username: {username}, user_string: {user_string}')
+            if 'news_setup' in context.user_data:
+                news_setup = context.user_data['news_setup']
+            else:
+                news_setup = self.user_data_db.get_news_setup(username)
+            self.news_engine.set_batch_generator(user_string, news_setup)
+            self.next_5_news(update, context)
+        else:
+            message = 'Enter topic: /news [topic]!'
+            update.message.reply_text(message)
+
+    def next_5_news(self, update, context):
+        news_generator = self.news_engine.batch_generator
+        print(f'news gen: {news_generator}')
+        if news_generator:
+            try:
+                message = next(news_generator)
+            except StopIteration as exc:
+                print(f'StopIteration is appeared! {exc}')
+                message = 'No more news! Batch pull is empty!'
+        else:
+            message = 'The news generator was not created!'
+
+        update.message.reply_text(message, parse_mode='html', reply_markup=gnews_keyboard())
+
+    @staticmethod
+    def return_setup(update, context):
+        update.message.reply_text('ok', reply_markup=setup_keyboard())
 
     def arxiv(self, update, context):
         print('Arxiv event message received!')
@@ -145,7 +181,12 @@ class Handlers:
         update.message.reply_text(message)
 
     @staticmethod
-    def translation(update, context):
-        print('Text message received!')
-        message = get_translated_text(update.message.text)
-        update.message.reply_text(message)
+    def just_translation(update, context):
+        update.message.reply_text(get_translated_text(update.message.text))
+
+    def text_message_wrapper(self, update, context):
+        text = update.message.text
+        print(f'Text message received! Text: {text}')
+        ops = {'next 5 news': self.next_5_news,
+               'return to setup': self.return_setup}
+        ops.get(text, self.just_translation)(update, context)

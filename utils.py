@@ -8,6 +8,11 @@ def setup_keyboard():
     return ReplyKeyboardMarkup(keys)
 
 
+def gnews_keyboard():
+    keys = [['next 5 news', 'return to setup']]
+    return ReplyKeyboardMarkup(keys)
+
+
 def is_numeric(string):
     for char in string:
         if char not in digits:
