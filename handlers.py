@@ -122,11 +122,7 @@ class Handlers:
         news_generator = self.news_engine.batch_generator
         print(f'news gen: {news_generator}')
         if news_generator:
-            try:
-                message = next(news_generator)
-            except StopIteration as exc:
-                print(f'StopIteration is appeared! {exc}')
-                message = 'No more news! Batch pull is empty!'
+            message = next(news_generator)
         else:
             message = 'The news generator was not created!'
 

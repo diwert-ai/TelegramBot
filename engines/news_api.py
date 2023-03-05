@@ -51,7 +51,9 @@ class NewsAPIEngine:
         start_line = f'status: {news_data["status"]}\ntotal results: {total_results}'
         print(start_line)
         if not total_results:
-            return None
+            while True:
+                yield 'No news on this topic!'
+
         while True:
             for batch_start in range(0, total_results, batch_size):
                 message = [start_line]
@@ -63,7 +65,7 @@ class NewsAPIEngine:
                     if headlines_lang != lang:
                         title = get_translated_text(title, destination=headlines_lang)
                     message.append(title)
-                yield '\n'.join(message) if message else 'no news on this topic'
+                yield '\n'.join(message)
 
     def set_batch_generator(self, topic, setup):
         print(setup)
