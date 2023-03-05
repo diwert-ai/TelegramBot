@@ -53,11 +53,11 @@ class NewsAPIEngine:
         if not total_results:
             return None
         while True:
-            for chunk_start in range(0, total_results, batch_size):
+            for batch_start in range(0, total_results, batch_size):
                 message = [start_line]
-                for k, article in enumerate(articles[chunk_start: chunk_start + batch_size]):
+                for k, article in enumerate(articles[batch_start: batch_start + batch_size]):
                     title = article['title']
-                    n = chunk_start + k + 1
+                    n = batch_start + k + 1
                     link, url = f"{article['source']['name']}: {title}", f"{article['url']}"
                     message.append(f'<a href="{url}">{n}. {link}</a>')
                     if headlines_lang != lang:
