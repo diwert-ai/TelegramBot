@@ -74,4 +74,4 @@ class NewsAPIEngine:
         if topic_lang != lang:
             topic = get_translated_text(topic, destination=lang)
         news_data = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang)
-        self.batch_generator = self.batching(news_data)
+        self.batch_generator = self.batching(news_data, headlines_lang=headlines_lang, lang=lang)
