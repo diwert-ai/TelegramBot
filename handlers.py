@@ -115,7 +115,7 @@ class Handlers:
             self.news_engine.set_batch_generator(user_string, news_setup)
             self.next_5_news(update, context)
         else:
-            message = 'Enter topic: /news [topic]!'
+            message = 'Enter topic: /gnews [topic]!'
             update.message.reply_text(message)
 
     def next_5_news(self, update, context):
