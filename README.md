@@ -27,7 +27,7 @@ CREATE TABLE users (
                           DEFAULT ( (DATETIME('now') ) ) 
 );
 ```
-and with table `news_setup`:
+with table `news_setup`:
 ```
 CREATE TABLE news_setup (
     id             INTEGER   PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +42,24 @@ CREATE TABLE news_setup (
                              DEFAULT ('ru'),
     date_from                NOT NULL
                              DEFAULT ( (DATETIME('now') ) ) 
+);
+```
+and with table `arxiv_setup`
+```
+CREATE TABLE arxiv_setup (
+    id           INTEGER   PRIMARY KEY AUTOINCREMENT,
+    user_id      INTEGER   REFERENCES users (id) ON DELETE CASCADE
+                           NOT NULL,
+    sort_by      TEXT (64) NOT NULL
+                           DEFAULT ('relevance'),
+    sort_order   TEXT (64) NOT NULL
+                           DEFAULT ('descending'),
+    max_results  INTEGER   NOT NULL
+                           DEFAULT (5),
+    topic_lang   TEXT (8)  NOT NULL
+                           DEFAULT ('en'),
+    results_lang TEXT (8)  NOT NULL
+                           DEFAULT ('ru') 
 );
 ```
 6. Make file `config.py` in project folder
