@@ -32,6 +32,7 @@ This bot supports the following commands:
 6. 'gnews' - more info here: /gnews_info
 7. 'arxiv' - more info here: /arxiv_info
 8. 'trans' - more info here: /trans_info
+9. 'echo' - more info here: /echo_info
 
 The bot returns an echo in English to any normal text message :)
 """
@@ -78,6 +79,9 @@ start with the first news.
 """,
                      '/trans_info': """
 `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English                     
+""",
+                     '/echo_info': """
+`/echo [text]` - The bot just reply with an echo text
 """}
         update.message.reply_text(info_msgs.get(update.message.text, 'info is coming!'), reply_markup=setup_keyboard())
 

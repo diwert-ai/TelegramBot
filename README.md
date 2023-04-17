@@ -80,3 +80,4 @@ with the parameters that have been configured in `news setup` conversation
 start with the first news.
 7. `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
 8. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
+9. `/echo [text]` - The bot just reply with an echo text
