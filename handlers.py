@@ -104,6 +104,7 @@ start with the first news.
         message += "\nInformation on the bot's commands is here: /help"
 
         context.user_data['news_setup'] = self.user_data_db.get_news_setup(chat.username)
+        context.user_data['arxiv_setup'] = self.user_data_db.get_arxiv_setup(chat.username)
         update.message.reply_text(message, reply_markup=setup_keyboard())
 
     def guess(self, update, context):

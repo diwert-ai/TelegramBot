@@ -16,6 +16,14 @@ class UserDataDB:
                 'news_lang': 'en',
                 'headlines_lang': 'ru'}
 
+    @staticmethod
+    def default_arxiv_setup():
+        return {'sort_by': 'relevance',
+                'sort_order': 'descending',
+                'max_results': 10,
+                'topic_lang': 'en',
+                'results_lang': 'ru'}
+
     def register_user(self, user_data):
         with sqlite3.connect(self.user_data_db_path) as db:
             cursor = db.cursor()
@@ -107,3 +115,27 @@ class UserDataDB:
 
             cursor.execute(query, (arxiv_setup['sort_by'], arxiv_setup['sort_order'], arxiv_setup['max_results'],
                                    arxiv_setup['topic_lang'], arxiv_setup['results_lang'], user_id))
+
+    def get_arxiv_setup(self, user_name):
+        """
+        Returns user's arxiv setup dictionary from db if it exists,
+        else returns default arxiv setup.
+        :param user_name: Username in telegram
+        :return: User's news setup dictionary
+        """
+        arxiv_setup = dict()
+        with sqlite3.connect(self.user_data_db_path) as db:
+            cursor = db.cursor()
+            query = '''SELECT sort_by, sort_order, max_results, topic_lang,  results_lang
+                       FROM arxiv_setup ars
+                       LEFT JOIN users u on u.id = ars.user_id
+                       WHERE u.user_name = (?)'''
+            result = cursor.execute(query, (user_name,)).fetchone()
+            if result:
+                arxiv_setup = {'sort_by': result[0],
+                               'sort_order': result[1],
+                               'max_results': result[2],
+                               'topic_lang': result[3],
+                               'results_lang': result[4]}
+
+        return arxiv_setup if arxiv_setup else self.default_arxiv_setup()
