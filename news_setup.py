@@ -6,8 +6,7 @@ from utils import setup_keyboard
 class NewsSetupConversation:
     def __init__(self, userdata_db):
         self.userdata_db = userdata_db
-        # TODO add self.key = 'news_setup'
-        #  key of context.user_data dictionary to store setup
+        self.key = 'news_setup'
 
     @staticmethod
     def sort_up_keyboard():
@@ -35,33 +34,33 @@ class NewsSetupConversation:
         return 'date_from'
 
     def date_from(self, update, context):
-        context.user_data['news_setup'] = {'date_from': update.message.text}
+        context.user_data[self.key] = {'date_from': update.message.text}
         update.message.reply_text('2. Select the order in which the news is sorted',
                                   reply_markup=self.sort_up_keyboard())
         return 'sort_by'
 
     def sort_by(self, update, context):
-        context.user_data['news_setup']['sort_by'] = update.message.text
+        context.user_data[self.key]['sort_by'] = update.message.text
         update.message.reply_text('3. Select a news language',
                                   reply_markup=self.news_lang_keyboard())
         return 'news_lang'
 
     def news_lang(self, update, context):
-        context.user_data['news_setup']['news_lang'] = update.message.text
+        context.user_data[self.key]['news_lang'] = update.message.text
         update.message.reply_text('4. Select the language in which you will formulate the topic of the news',
                                   reply_markup=self.topic_lang_keyboard())
         return 'topic_lang'
 
     def topic_lang(self, update, context):
-        context.user_data['news_setup']['topic_lang'] = update.message.text
+        context.user_data[self.key]['topic_lang'] = update.message.text
         update.message.reply_text('5. Select the language in which you want to translate the headlines',
                                   reply_markup=self.headlines_lang_keyboard())
         return 'headlines_lang'
 
     def headlines_lang(self, update, context):
-        context.user_data['news_setup']['headlines_lang'] = update.message.text
+        context.user_data[self.key]['headlines_lang'] = update.message.text
         username = update.message.chat.username
-        user_news_setup = context.user_data['news_setup']
+        user_news_setup = context.user_data[self.key]
         message = f'''Thanks! Your news setup:
 <b>Date from</b>: {user_news_setup['date_from']}
 <b>Sort by</b>: {user_news_setup['sort_by']}
