@@ -85,4 +85,25 @@ class UserDataDB:
         return news_setup if news_setup else self.default_news_setup()
 
     def update_arxiv_setup(self, username, arxiv_setup):
-        pass
+        with sqlite3.connect(self.user_data_db_path) as db:
+            cursor = db.cursor()
+            query = 'SELECT id FROM users WHERE user_name = (?)'
+            result = cursor.execute(query, (username,)).fetchone()
+            assert result, f'There is no record in table `users` for user {username}!'
+            user_id = result[0]
+            query = 'SELECT id FROM arxiv_setup WHERE user_id = (?)'
+            result = cursor.execute(query, (user_id,)).fetchone()
+            if result:
+                query = '''UPDATE arxiv_setup 
+                           SET sort_by = (?),
+                               sort_order = (?),
+                               max_results = (?),
+                               topic_lang = (?),
+                               results_lang = (?)
+                           WHERE user_id = (?)'''
+            else:
+                query = '''INSERT INTO arxiv_setup(sort_by, sort_order, max_results, topic_lang, results_lang, user_id)
+                           VALUES(?, ?, ?, ?, ?, ?)'''
+
+            cursor.execute(query, (arxiv_setup['sort_by'], arxiv_setup['sort_order'], arxiv_setup['max_results'],
+                                   arxiv_setup['topic_lang'], arxiv_setup['results_lang'], user_id))
