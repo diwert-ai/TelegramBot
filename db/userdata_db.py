@@ -83,3 +83,6 @@ class UserDataDB:
                               'headlines_lang': result[4]}
 
         return news_setup if news_setup else self.default_news_setup()
+
+    def update_arxiv_setup(self, username, arxiv_setup):
+        pass

@@ -6,6 +6,8 @@ from utils import setup_keyboard
 class NewsSetupConversation:
     def __init__(self, userdata_db):
         self.userdata_db = userdata_db
+        # TODO add self.key = 'news_setup'
+        #  key of context.user_data dictionary to store setup
 
     @staticmethod
     def sort_up_keyboard():

@@ -11,6 +11,7 @@ def main():
     dp = bot.dispatcher
     handlers = Handlers()
     dp.add_handler(handlers.news_setup_conversation.handler())
+    dp.add_handler(handlers.arxiv_setup_conversation.handler())
     dp.add_handler(CommandHandler('help', handlers.help))
     dp.add_handler(CommandHandler('start_info', handlers.info))
     dp.add_handler(CommandHandler('guess_info', handlers.info))

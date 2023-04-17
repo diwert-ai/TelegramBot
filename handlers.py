@@ -6,6 +6,7 @@ from engines.google_ngrams import GoogleNgramsEngine
 from engines.news_api import NewsAPIEngine
 from engines.arxiv_api import ArxivEngine
 from news_setup import NewsSetupConversation
+from arxiv_setup import ArxivSetupConversation
 
 
 class Handlers:
@@ -16,6 +17,7 @@ class Handlers:
         self.google_ngrams_engine = GoogleNgramsEngine()
         self.bulls_cows_engine = BullsAndCowsEngine()
         self.news_setup_conversation = NewsSetupConversation(self.user_data_db)
+        self.arxiv_setup_conversation = ArxivSetupConversation(self.user_data_db)
 
     @staticmethod
     def help(update, context):
