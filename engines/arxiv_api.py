@@ -7,7 +7,7 @@ class ArxivEngine:
     def get_info(query):
         search = arxiv.Search(
             query=query,
-            max_results=3,
+            max_results=5,
             sort_by=arxiv.SortCriterion.SubmittedDate
         )
         message = []
