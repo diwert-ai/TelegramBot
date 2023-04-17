@@ -21,4 +21,9 @@ def is_numeric(string):
 
 
 def get_translated_text(text, destination='en'):
-    return ts.translate_text(query_text=text, to_language=destination, translator='google')
+    try:
+        translated_text = ts.translate_text(query_text=text, to_language=destination, translator='google')
+    except Exception as e:
+        translated_text = f'<b>[Error occurred while translating: "{e}"</b>]\n{text}'
+
+    return translated_text

@@ -31,6 +31,8 @@ class NewsAPIEngine:
             topic = get_translated_text(topic, destination=lang)
         data, message = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang), []
         status = data['status']
+        if status == 'error':
+            return data['message']
         total_results = data['totalResults']
         message.append(f'status: {status}\ntotal results: {total_results}')
         articles = data['articles']
@@ -46,9 +48,14 @@ class NewsAPIEngine:
 
     @staticmethod
     def batching(news_data, batch_size=5, headlines_lang='ru', lang='en'):
+        status = news_data['status']
+        if status == 'error':
+            while True:
+                yield news_data['message']
+
         total_results = news_data["totalResults"]
         articles = news_data['articles']
-        start_line = f'status: {news_data["status"]}\ntotal results: {total_results}'
+        start_line = f'status: {status}\ntotal results: {total_results}'
         print(start_line)
         if not total_results:
             while True:
