@@ -17,6 +17,70 @@ class Handlers:
         self.bulls_cows_engine = BullsAndCowsEngine()
         self.news_setup_conversation = NewsSetupConversation(self.user_data_db)
 
+    @staticmethod
+    def help(update, context):
+        print('Help event message received!')
+        print(f'update: {update}')
+        message = """
+This bot supports the following commands:
+0. 'help' - show this message!
+1. 'start' - more info here: /start_info 
+2. 'g' or 'guess' - more info here: /guess_info
+3. 'ngram' - more info here: /ngram_info
+4. 'decode' - more info here: /decode_info 
+5. 'news' - more info here: /news_info
+6. 'gnews' - more info here: /gnews_info
+7. 'arxiv' - more info here: /arxiv_info
+8. 'trans' - more info here: /trans_info
+
+The bot returns an echo in English to any normal text message :)
+"""
+
+        update.message.reply_text(message, reply_markup=setup_keyboard())
+
+    @staticmethod
+    def info(update, context):
+        info_msgs = {'/start_info': """
+`/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
+if not, it registers this user in the sqlite database. A menu appears with two buttons: `news setup` and `arxiv setup`.
+The first launches the conversation to create user parameters for requests to https://newsapi.org (used in the `/news`
+and `/gnews` commands). The second one is analyzed for queries to https://arxiv.org (not yet implemented).
+User parameters are stored in `context.user_data` and stored in the sqlite database.
+""",
+
+                     '/guess_info': """
+`/g [4-digits string - user's guess]` or `/guess [4-digits string - user's guess]` - Bot plays a game of bulls and cows.
+The bot guesses a four-digit number and returns the number of bulls and cows according to the user's guess in the format 
+nBmC, where n is the number of bulls and m is the number of cows.
+""",
+                     '/ngram_info': """
+`/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
+""",
+                     '/decode_info': """
+`/decode [numeric code]` - The bot returns the most likely decoding of the number string.
+Each digit is recoded according to the rules of the keypad of a pushbutton phone. The probability is determined by
+the n-gram statistics obtained from the Google Ngram Viewer service. The n-gram stats are saved in a sqlite database,
+which allows you to take the stats from the database instead of making the same queries to the Google Ngram Viewer.
+""",
+                     '/news_info': """
+`/news [topic]` - The bot returns the top 5 news items with a given topic, using the service https://newsapi.org
+with the parameters that have been configured in `news setup` conversation
+""",
+                     '/gnews_info': """
+`/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
+`next 5 news` (gives the next 5 news from the general pool that the https://newsapi.org service has returned) and
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
+`next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
+start with the first news.
+""",
+                     '/arxiv_info': """
+`/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
+""",
+                     '/trans_info': """
+`/trans [phrase]` - The bot returns the translation of the phrase from Russian to English                     
+"""}
+        update.message.reply_text(info_msgs.get(update.message.text, 'info is coming!'), reply_markup=setup_keyboard())
+
     def start(self, update, context):
         print('Start event message received!')
         print(f'update: {update}')
@@ -30,6 +94,8 @@ class Handlers:
             message = f'Long time no see! Hi, {chat.username}! 🤝'
         else:
             message = f'Sounds like this is your first time here! 🙂 Welcome, {chat.username}! 😉'
+
+        message += "\nInformation on the bot's commands is here: /help"
 
         context.user_data['news_setup'] = self.user_data_db.get_news_setup(chat.username)
         update.message.reply_text(message, reply_markup=setup_keyboard())
