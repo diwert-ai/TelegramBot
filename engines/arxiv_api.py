@@ -56,7 +56,7 @@ class ArxivEngine:
                 for k in range(batch_size):
                     try:
                         article = next(articles)
-                    except StopIteration as e:
+                    except StopIteration:
                         break
                     title = article.title
                     authors = ', '.join(map(lambda x: x.name, article.authors))
