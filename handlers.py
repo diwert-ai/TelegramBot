@@ -78,7 +78,8 @@ with the parameters that have been configured in `news setup` conversation
 start with the first news.
 """,
                      '/arxiv_info': """
-`/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
+`/arxiv [topic]` - The bot returns only the last 5 articles with the given topic, published 
+on https://arxiv.org with the parameters that have been configured in `arxiv setup` conversation.
 """,
                      '/garxiv_info': """
 `/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
@@ -220,13 +221,15 @@ again start with the first article.
         if args:
             user_string = ' '.join(args)
             print(f'user_string: {user_string}')
-            message = self.arxiv_engine.get_info(user_string)
+            username = update.message.chat.username
+            print(f'username: {username}, user_string: {user_string}')
+            if 'arxiv_setup' in context.user_data:
+                arxiv_setup = context.user_data['arxiv_setup']
+            else:
+                arxiv_setup = self.user_data_db.get_arxiv_setup(username)
+            message = self.arxiv_engine.get_info(user_string, arxiv_setup)
         else:
             message = 'Enter topic: /arxiv [topic]!'
-
-        '''msgs = [message[i:i + 4096] for i in range(0, len(message), 4096)]
-        for text in msgs:
-            update.message.reply_text(text, parse_mode='html')'''
 
         update.message.reply_text(message, parse_mode='html')
 

@@ -97,7 +97,7 @@ with the parameters that have been configured in `news setup` conversation
 `return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
 `next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
 start with the first news.
-8. `/arxiv [topic]` - The bot returns the last 5 articles (by submitted date) with the given topic, published 
+8. `/arxiv [topic]` - The bot returns only the last 5 articles with the given topic, published 
 on https://arxiv.org with the parameters that have been configured in `arxiv setup` conversation
 9. `/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
 `next 5 articles` (gives the next 5 articles from the general pool that the https://arxiv.org service has returned) and

@@ -30,22 +30,31 @@ class ArxivEngine:
                 return url
         return links[0]
 
-    def get_info(self, query):
+    def get_info(self, query, setup, lang='en'):
+        results_lang, topic_lang = setup['results_lang'], setup['topic_lang']
+        sort_by, sort_order = self.sort_by_map[setup['sort_by']], self.sort_order_map[setup['sort_order']]
+        print(setup)
+        if topic_lang != lang:
+            query = get_translated_text(query, destination=lang)
+        print(query)
         search = arxiv.Search(
             query='all:"'+query+'"',
             max_results=5,
-            sort_by=arxiv.SortCriterion.SubmittedDate
+            sort_by=sort_by,
+            sort_order=sort_order
         )
         message = []
         for result in search.results():
             authors = ', '.join(map(lambda x: x.name, result.authors))
             link, url = f"{result.published} {authors}: {result.title}", f"{self.get_arxiv_url(result.links)}"
             message.append(f'<a href="{url}">{link}</a>')
-            message.append(get_translated_text(result.title, destination='ru'))
-            # message.append(get_translated_text(result.summary, destination='ru'))
-            message.append('---------------------------')
+            title = result.title
+            if results_lang != lang:
+                title = get_translated_text(result.title, destination=results_lang)
+            message.append(title)
+            message.append('-------------------------------------------------------------------------------')
 
-        return '\n'.join(message) if message else 'no articles on this topic'
+        return '\n'.join(message) if message else f'No articles on this topic!\n{query}'
 
     def batching(self, batch_size=5, results_lang='ru', lang='en'):
         total_articles = len(list(self.search_results.results()))
