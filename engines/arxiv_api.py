@@ -33,10 +33,8 @@ class ArxivEngine:
     def get_info(self, query, setup, lang='en'):
         results_lang, topic_lang = setup['results_lang'], setup['topic_lang']
         sort_by, sort_order = self.sort_by_map[setup['sort_by']], self.sort_order_map[setup['sort_order']]
-        print(setup)
         if topic_lang != lang:
             query = get_translated_text(query, destination=lang)
-        print(query)
         search = arxiv.Search(
             query='all:"'+query+'"',
             max_results=5,
