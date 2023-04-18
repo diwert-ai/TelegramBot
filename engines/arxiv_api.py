@@ -27,7 +27,7 @@ class ArxivEngine:
     @staticmethod
     def get_info(query):
         search = arxiv.Search(
-            query='"'+query+'"',
+            query='all:"'+query+'"',
             max_results=5,
             sort_by=arxiv.SortCriterion.SubmittedDate
         )

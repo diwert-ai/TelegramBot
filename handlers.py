@@ -274,7 +274,6 @@ again start with the first article.
         update.message.reply_text(summary)
         update.message.reply_text(get_translated_text(summary, destination='ru'))
 
-
     @staticmethod
     def echo(update, context):
         print('Echo event message received!')

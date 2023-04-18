@@ -29,6 +29,6 @@ def get_translated_text(text, destination='en'):
     try:
         translated_text = ts.translate_text(query_text=text, to_language=destination, translator='google')
     except Exception as e:
-        translated_text = f'<b>[Error occurred while translating: "{e}"</b>]\n{text}'
+        translated_text = f'<b>[Error occurred while translating: "{e}"]</b>\n{text}'
 
     return translated_text
