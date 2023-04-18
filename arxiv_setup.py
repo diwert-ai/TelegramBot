@@ -45,7 +45,7 @@ class ArxivSetupConversation:
         return 'max_results'
 
     def max_results(self, update, context):
-        context.user_data[self.key]['max_results'] = update.message.text
+        context.user_data[self.key]['max_results'] = int(update.message.text)
         update.message.reply_text('4. Select the language in which you will formulate the topic of the articles',
                                   reply_markup=self.topic_lang_keyboard())
         return 'topic_lang'

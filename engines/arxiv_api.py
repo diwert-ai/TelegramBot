@@ -48,12 +48,16 @@ class ArxivEngine:
         if not total_articles:
             while True:
                 yield 'No articles on this topic!'
-        articles = search_results.results()
+
         while True:
+            articles = search_results.results()
             for batch_start in range(0, total_articles, batch_size):
                 message = [start_line]
                 for k in range(batch_size):
-                    article = next(articles)
+                    try:
+                        article = next(articles)
+                    except StopIteration as e:
+                        break
                     title = article.title
                     authors = ', '.join(map(lambda x: x.name, article.authors))
                     link, url = f"{article.published} {authors}: {title}", f"{article.links[0]}"
