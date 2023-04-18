@@ -20,6 +20,7 @@ def main():
     dp.add_handler(CommandHandler('news_info', handlers.info))
     dp.add_handler(CommandHandler('gnews_info', handlers.info))
     dp.add_handler(CommandHandler('arxiv_info', handlers.info))
+    dp.add_handler(CommandHandler('garxiv_info', handlers.info))
     dp.add_handler(CommandHandler('trans_info', handlers.info))
     dp.add_handler(CommandHandler('echo_info', handlers.info))
     dp.add_handler(CommandHandler('start', handlers.start))

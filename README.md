@@ -74,28 +74,34 @@ class Config:
 8. Run bot (in virtual environment): `python bot.py`
 
 ## Bot commands
-1. `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
+1. `/help` - The bot show list of commands
+2. `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
 if not, it registers this user in the sqlite database. A menu appears with two buttons:
 `news setup` and `arxiv setup`. The first launches the conversation to create user parameters for requests 
 to https://newsapi.org (used in the `/news` and `/gnews` commands). The second one is analyzed for queries
-to https://arxiv.org
-(not yet implemented). User parameters are stored in `context.user_data` and stored in the sqlite database.
-2. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit
+to https://arxiv.org. User parameters are stored in `context.user_data` and stored in the sqlite database.
+3. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit
 number and returns
 the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is
 the number of cows.
-3. `/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
-4. `/decode [numeric code]` - The bot returns the most likely decoding of the number string.
+4. `/ngram [n-gram]` - Bot returns n-gram statistics requested from Google Ngram Viewer service.
+5. `/decode [numeric code]` - The bot returns the most likely decoding of the number string.
 Each digit is recoded according to the rules of the keypad of a pushbutton phone. The probability is determined by
 the n-gram statistics obtained from the Google Ngram Viewer service. The n-gram stats are saved in a sqlite database,
 which allows you to take the stats from the database instead of making the same queries to the Google Ngram Viewer.
-5.  `/news [topic]` - The bot returns the top 5 news items with a given topic, using the service https://newsapi.org
+6. `/news [topic]` - The bot returns the top 5 news items with a given topic, using the service https://newsapi.org
 with the parameters that have been configured in `news setup` conversation
-6.  `/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
+7. `/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
 `next 5 news` (gives the next 5 news from the general pool that the https://newsapi.org service has returned) and
 `return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
 `next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
 start with the first news.
-7. `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
-8. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
-9. `/echo [text]` - The bot just reply with an echo text
+8. `/arxiv [topic]` - The bot returns the last 5 articles (by submitted date) with the given topic, published 
+on https://arxiv.org with the parameters that have been configured in `arxiv setup` conversation
+9. `/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
+`next 5 articles` (gives the next 5 articles from the general pool that the https://arxiv.org service has returned) and
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing articles on the button
+`next 5 articles` is looped to an endless loop, ie, after the last article from the pool will be shown, the show will 
+again start with the first article.
+10. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
+11. `/echo [text]` - The bot just reply with an echo text

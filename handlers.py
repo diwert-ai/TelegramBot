@@ -33,8 +33,9 @@ This bot supports the following commands:
 5. 'news' - more info here: /news_info
 6. 'gnews' - more info here: /gnews_info
 7. 'arxiv' - more info here: /arxiv_info
-8. 'trans' - more info here: /trans_info
-9. 'echo' - more info here: /echo_info
+8. 'garxiv' - more info here: /garxiv_info
+9. 'trans' - more info here: /trans_info
+10. 'echo' - more info here: /echo_info
 
 The bot returns an echo in English to any normal text message :)
 """
@@ -47,8 +48,8 @@ The bot returns an echo in English to any normal text message :)
 `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
 if not, it registers this user in the sqlite database. A menu appears with two buttons: `news setup` and `arxiv setup`.
 The first launches the conversation to create user parameters for requests to https://newsapi.org (used in the `/news`
-and `/gnews` commands). The second one is analyzed for queries to https://arxiv.org (not yet implemented).
-User parameters are stored in `context.user_data` and stored in the sqlite database.
+and `/gnews` commands). The second one is analyzed for queries to https://arxiv.org. User parameters are stored in 
+`context.user_data` and stored in the sqlite database.
 """,
 
                      '/guess_info': """
@@ -78,6 +79,13 @@ start with the first news.
 """,
                      '/arxiv_info': """
 `/arxiv [topic]` - The bot returns the last 5 articles with the given topic, published on https://arxiv.org
+""",
+                     '/garxiv_info': """
+`/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
+`next 5 articles` (gives the next 5 articles from the general pool that the https://arxiv.org service has returned) and
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing articles on the button
+`next 5 articles` is looped to an endless loop, ie, after the last article from the pool will be shown, the show will 
+again start with the first article.
 """,
                      '/trans_info': """
 `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English                     
