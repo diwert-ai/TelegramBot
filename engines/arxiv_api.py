@@ -1,10 +1,12 @@
 import arxiv
+from urllib import parse
 from utils import get_translated_text
 
 
 class ArxivEngine:
     def __init__(self):
         self.batch_generator = None
+        self.search_results = None
         self.sort_by_map = {'relevance': arxiv.SortCriterion.Relevance,
                             'lastUpdatedDate': arxiv.SortCriterion.LastUpdatedDate,
                             'submittedDate': arxiv.SortCriterion.SubmittedDate}
@@ -15,7 +17,7 @@ class ArxivEngine:
     def run_query(query, max_results, sort_by, sort_order):
         print(f'arxiv run query: {query} {max_results} {sort_by} {sort_order}')
         search = arxiv.Search(
-            query=query,
+            query='"'+query+'"',
             max_results=max_results,
             sort_by=sort_by,
             sort_order=sort_order
@@ -25,7 +27,7 @@ class ArxivEngine:
     @staticmethod
     def get_info(query):
         search = arxiv.Search(
-            query=query,
+            query='"'+query+'"',
             max_results=5,
             sort_by=arxiv.SortCriterion.SubmittedDate
         )
@@ -40,9 +42,8 @@ class ArxivEngine:
 
         return '\n'.join(message) if message else 'no articles on this topic'
 
-    @staticmethod
-    def batching(search_results, batch_size=5, results_lang='ru', lang='en'):
-        total_articles = len(list(search_results.results()))
+    def batching(self, batch_size=5, results_lang='ru', lang='en'):
+        total_articles = len(list(self.search_results.results()))
         start_line = f'total articles: {total_articles}'
         print(start_line)
         if not total_articles:
@@ -50,7 +51,7 @@ class ArxivEngine:
                 yield 'No articles on this topic!'
 
         while True:
-            articles = search_results.results()
+            articles = self.search_results.results()
             for batch_start in range(0, total_articles, batch_size):
                 message = [start_line]
                 for k in range(batch_size):
@@ -66,6 +67,7 @@ class ArxivEngine:
                     if results_lang != lang:
                         title = get_translated_text(title, destination=results_lang)
                     message.append(title)
+                    message.append(f'<b>type /abs_{n} to get the article abstract</b>')
                 yield '\n'.join(message)
 
     def set_batch_generator(self, topic, setup):
@@ -75,5 +77,6 @@ class ArxivEngine:
         sort_by, sort_order = self.sort_by_map[setup['sort_by']], self.sort_order_map[setup['sort_order']]
         if topic_lang != lang:
             topic = get_translated_text(topic, destination=lang)
-        search_results = self.run_query(topic, max_results, sort_by, sort_order)
-        self.batch_generator = self.batching(search_results, results_lang=results_lang, lang=lang)
+        self.search_results = self.run_query(topic, max_results, sort_by, sort_order)
+        self.batch_generator = self.batching(results_lang=results_lang, lang=lang)
+
