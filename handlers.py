@@ -259,12 +259,18 @@ again start with the first article.
         update.message.reply_text(message, parse_mode='html', reply_markup=garxiv_keyboard())
 
     def send_abstract(self, update, context):
+        print('Send abstract command received!')
         n = context.args[0]
+        print(f'n: {n}')
         article = None
-        for k, article in enumerate(self.arxiv_engine.search_results.results(), 1):
-            if k == n:
-                break
-        summary = article.summary if article else 'article not found!'
+        if self.arxiv_engine.search_results:
+            for k, article in enumerate(self.arxiv_engine.search_results.results(), 1):
+                if k == n:
+                    break
+            summary = article.summary if article else 'article not found!'
+        else:
+            summary = 'Search results not found! Try commands: garxiv or arxiv. ' +\
+                      'See help here: /garxiv_info or /arxiv_info'
         update.message.reply_text(summary)
         update.message.reply_text(get_translated_text(summary, destination='ru'))
 
@@ -304,10 +310,13 @@ again start with the first article.
         text = update.message.text
         print(f'Text message received! Text: {text}')
 
-        if text.startswith('/abs_'):
-            context.args = [int(text[5:])]
-            self.send_abstract(update, context)
-            return
+        if len(text) > 5 and text.startswith('/abs_'):
+            try:
+                n = int(text[5:])
+                context.args = [int(text[5:])]
+                return self.send_abstract(update, context)
+            except ValueError as e:
+                print(f'text_message_wrapper: {e}')
 
         ops = {'next 5 news': self.next_5_news,
                'next 5 articles': self.next_5_articles,
