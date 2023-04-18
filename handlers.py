@@ -52,7 +52,6 @@ to https://newsapi.org (used in the `/news` and `/gnews` commands). The second l
 parameters for requests to https://arxiv.org (used in the `/arxiv` and `/garxiv` commands). User parameters are stored
 in `context.user_data` and stored in the sqlite database.
 """,
-
                      '/guess_info': """
 `/g [4-digits string - user's guess]` or `/guess [4-digits string - user's guess]` - Bot plays a game of bulls and cows.
 The bot guesses a four-digit number and returns the number of bulls and cows according to the user's guess in the format 
