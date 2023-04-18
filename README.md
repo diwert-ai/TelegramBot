@@ -78,8 +78,9 @@ class Config:
 2. `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
 if not, it registers this user in the sqlite database. A menu appears with two buttons:
 `news setup` and `arxiv setup`. The first launches the conversation to create user parameters for requests 
-to https://newsapi.org (used in the `/news` and `/gnews` commands). The second one is analyzed for queries
-to https://arxiv.org. User parameters are stored in `context.user_data` and stored in the sqlite database.
+to https://newsapi.org (used in the `/news` and `/gnews` commands). The second launches the conversation to create user 
+parameters for requests to https://arxiv.org (used in the `/arxiv` and `/garxiv` commands). User parameters are stored
+in `context.user_data` and stored in the sqlite database.
 3. `/g [4-digits string - user's guess]` or `/guess` - Bot plays a game of bulls and cows. The bot guesses a four-digit
 number and returns
 the number of bulls and cows according to the user's guess in the format nBmC, where n is the number of bulls and m is

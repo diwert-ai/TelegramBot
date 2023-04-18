@@ -46,10 +46,11 @@ The bot returns an echo in English to any normal text message :)
     def info(update, context):
         info_msgs = {'/start_info': """
 `/start` - The bot responds with a greeting, using the username. It finds out if the user has been there before and 
-if not, it registers this user in the sqlite database. A menu appears with two buttons: `news setup` and `arxiv setup`.
-The first launches the conversation to create user parameters for requests to https://newsapi.org (used in the `/news`
-and `/gnews` commands). The second one is analyzed for queries to https://arxiv.org. User parameters are stored in 
-`context.user_data` and stored in the sqlite database.
+if not, it registers this user in the sqlite database. A menu appears with two buttons:
+`news setup` and `arxiv setup`. The first launches the conversation to create user parameters for requests 
+to https://newsapi.org (used in the `/news` and `/gnews` commands). The second launches the conversation to create user 
+parameters for requests to https://arxiv.org (used in the `/arxiv` and `/garxiv` commands). User parameters are stored
+in `context.user_data` and stored in the sqlite database.
 """,
 
                      '/guess_info': """
