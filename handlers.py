@@ -258,6 +258,17 @@ again start with the first article.
 
         update.message.reply_text(message, parse_mode='html', reply_markup=garxiv_keyboard())
 
+    def send_abstract(self, update, context):
+        n = context.args[0]
+        article = None
+        for k, article in enumerate(self.arxiv_engine.search_results.results(), 1):
+            if k == n:
+                break
+        summary = article.summary if article else 'article not found!'
+        update.message.reply_text(summary)
+        update.message.reply_text(get_translated_text(summary, destination='ru'))
+
+
     @staticmethod
     def echo(update, context):
         print('Echo event message received!')
@@ -292,6 +303,12 @@ again start with the first article.
     def text_message_wrapper(self, update, context):
         text = update.message.text
         print(f'Text message received! Text: {text}')
+
+        if text.startswith('/abs_'):
+            context.args = [int(text[5:])]
+            self.send_abstract(update, context)
+            return
+
         ops = {'next 5 news': self.next_5_news,
                'next 5 articles': self.next_5_articles,
                'return to setup': self.return_setup}

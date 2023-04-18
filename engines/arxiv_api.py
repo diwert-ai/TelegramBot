@@ -17,7 +17,7 @@ class ArxivEngine:
     def run_query(query, max_results, sort_by, sort_order):
         print(f'arxiv run query: {query} {max_results} {sort_by} {sort_order}')
         search = arxiv.Search(
-            query='"'+query+'"',
+            query='all:"'+query+'"',
             max_results=max_results,
             sort_by=sort_by,
             sort_order=sort_order
