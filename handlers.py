@@ -242,7 +242,8 @@ again start with the first article.
                 arxiv_setup = context.user_data['arxiv_setup']
             else:
                 arxiv_setup = self.user_data_db.get_arxiv_setup(username)
-            self.arxiv_engine.set_batch_generator(user_string, arxiv_setup)
+            query = self.arxiv_engine.set_batch_generator(user_string, arxiv_setup)
+            update.message.reply_text(f'I am trying search articles by query "{query}"...', parse_mode='html')
             self.next_5_articles(update, context)
         else:
             message = 'Enter topic: /garxiv [topic]!'
@@ -267,7 +268,8 @@ again start with the first article.
             for k, article in enumerate(self.arxiv_engine.search_results.results(), 1):
                 if k == n:
                     break
-            summary = article.summary if article else 'article not found!'
+            summary = article.summary.replace('\n', '') if article else 'article not found!'
+
         else:
             summary = 'Search results not found! Try commands: garxiv or arxiv. ' +\
                       'See help here: /garxiv_info or /arxiv_info'
