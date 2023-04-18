@@ -1,4 +1,4 @@
-from utils import is_numeric, get_translated_text, setup_keyboard, gnews_keyboard
+from utils import is_numeric, get_translated_text, setup_keyboard, gnews_keyboard, garxiv_keyboard
 
 from db.userdata_db import UserDataDB
 from engines.bullscows import BullsAndCowsEngine
@@ -222,6 +222,34 @@ start with the first news.
 
         update.message.reply_text(message, parse_mode='html')
 
+    def garxiv(self, update, context):
+        print('Garxiv event message received!')
+        args = context.args
+        print(f'args: {args}')
+        if args:
+            user_string = ' '.join(args)
+            username = update.message.chat.username
+            print(f'username: {username}, user_string: {user_string}')
+            if 'arxiv_setup' in context.user_data:
+                arxiv_setup = context.user_data['arxiv_setup']
+            else:
+                arxiv_setup = self.user_data_db.get_arxiv_setup(username)
+            self.arxiv_engine.set_batch_generator(user_string, arxiv_setup)
+            self.next_5_articles(update, context)
+        else:
+            message = 'Enter topic: /garxiv [topic]!'
+            update.message.reply_text(message)
+
+    def next_5_articles(self, update, context):
+        articles_generator = self.arxiv_engine.batch_generator
+        print(f'arxiv gen: {articles_generator}')
+        if articles_generator:
+            message = next(articles_generator)
+        else:
+            message = 'The arxiv articles generator was not created! Try first `/garxiv [topic]` command!'
+
+        update.message.reply_text(message, parse_mode='html', reply_markup=garxiv_keyboard())
+
     @staticmethod
     def echo(update, context):
         print('Echo event message received!')
@@ -257,5 +285,6 @@ start with the first news.
         text = update.message.text
         print(f'Text message received! Text: {text}')
         ops = {'next 5 news': self.next_5_news,
+               'next 5 articles': self.next_5_articles,
                'return to setup': self.return_setup}
         ops.get(text, self.just_translation)(update, context)

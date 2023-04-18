@@ -30,6 +30,7 @@ def main():
     dp.add_handler(CommandHandler('news', handlers.news))
     dp.add_handler(CommandHandler('gnews', handlers.gnews))
     dp.add_handler(CommandHandler('arxiv', handlers.arxiv))
+    dp.add_handler(CommandHandler('garxiv', handlers.garxiv))
     dp.add_handler(CommandHandler('trans', handlers.trans))
     dp.add_handler(CommandHandler('echo', handlers.echo))
     dp.add_handler(MessageHandler(Filters.text, handlers.text_message_wrapper))

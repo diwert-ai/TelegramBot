@@ -134,7 +134,7 @@ class UserDataDB:
             if result:
                 arxiv_setup = {'sort_by': result[0],
                                'sort_order': result[1],
-                               'max_results': result[2],
+                               'max_results': int(result[2]),
                                'topic_lang': result[3],
                                'results_lang': result[4]}
 

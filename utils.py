@@ -13,6 +13,11 @@ def gnews_keyboard():
     return ReplyKeyboardMarkup(keys)
 
 
+def garxiv_keyboard():
+    keys = [['next 5 articles', 'return to setup']]
+    return ReplyKeyboardMarkup(keys)
+
+
 def is_numeric(string):
     for char in string:
         if char not in digits:
