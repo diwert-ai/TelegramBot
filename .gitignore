@@ -8,3 +8,4 @@ db/*.db
 db/__pycache__/
 engines/__pycache__/
 *.pyc
+*.png
