@@ -74,20 +74,17 @@ with the parameters that have been configured in `news setup` conversation
                      '/gnews_info': """
 `/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
 `next 5 news` (gives the next 5 news from the general pool that the https://newsapi.org service has returned) and
-`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
-`next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
-start with the first news.
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1).
 """,
                      '/arxiv_info': """
 `/arxiv [topic]` - The bot returns only the last 5 articles with the given topic, published 
 on https://arxiv.org with the parameters that have been configured in `arxiv setup` conversation.
 """,
                      '/garxiv_info': """
-`/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
-`next 5 articles` (gives the next 5 articles from the general pool that the https://arxiv.org service has returned) and
-`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing articles on the button
-`next 5 articles` is looped to an endless loop, ie, after the last article from the pool will be shown, the show will 
-again start with the first article.
+`/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands:
+   1. `next 5 articles` - Gives the next 5 articles from the general pool that the https://arxiv.org service has returned
+   2. `diagram stat` - The bot sends a chart of the distribution of articles by year.
+   3. `return setup` - Returns the `news setup` and `arxiv setup` menu buttons.
 """,
                      '/trans_info': """
 `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English                     
@@ -278,7 +275,14 @@ again start with the first article.
             summary = 'Search results not found! Try commands: garxiv or arxiv. ' +\
                       'See help here: /garxiv_info or /arxiv_info'
         update.message.reply_text(summary)
-        update.message.reply_text(get_translated_text(summary, destination='ru'))
+        username = update.message.chat.username
+        if 'arxiv_setup' in context.user_data:
+            arxiv_setup = context.user_data['arxiv_setup']
+        else:
+            arxiv_setup = self.user_data_db.get_arxiv_setup(username)
+        results_lang = arxiv_setup['results_lang']
+        if results_lang != 'en':
+            update.message.reply_text(get_translated_text(summary, destination=results_lang))
 
     def send_diagram_stat(self, update, context):
         articles = []
@@ -294,7 +298,6 @@ again start with the first article.
                 update.message.reply_text('Articles not found! Try again!')
         else:
             update.message.reply_text('Search results not found! Try again!')
-
 
     @staticmethod
     def echo(update, context):
@@ -333,7 +336,6 @@ again start with the first article.
 
         if len(text) > 5 and text.startswith('/abs_'):
             try:
-                n = int(text[5:])
                 context.args = [int(text[5:])]
                 return self.send_abstract(update, context)
             except ValueError as e:

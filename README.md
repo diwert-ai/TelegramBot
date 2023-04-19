@@ -94,15 +94,12 @@ which allows you to take the stats from the database instead of making the same 
 with the parameters that have been configured in `news setup` conversation
 7. `/gnews [topic]` - The bot does the same thing as the `/news` command, but a menu appears with the commands
 `next 5 news` (gives the next 5 news from the general pool that the https://newsapi.org service has returned) and
-`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing news on the button
-`next 5 news` is looped to an endless loop, ie, after the last news from the pool will be shown, the show will again
-start with the first news.
+`return setup` (returns the `news setup` and `arxiv setup` menu buttons.
 8. `/arxiv [topic]` - The bot returns only the last 5 articles with the given topic, published 
 on https://arxiv.org with the parameters that have been configured in `arxiv setup` conversation
-9. `/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands
-`next 5 articles` (gives the next 5 articles from the general pool that the https://arxiv.org service has returned) and
-`return setup` (returns the `news setup` and `arxiv setup` menu buttons - see step 1). Showing articles on the button
-`next 5 articles` is looped to an endless loop, ie, after the last article from the pool will be shown, the show will 
-again start with the first article.
+9. `/garxiv [topic]` - The bot does the same thing as the `/arxiv` command, but a menu appears with the commands:
+   1. `next 5 articles` - Gives the next 5 articles from the general pool that the https://arxiv.org service has returned
+   2. `diagram stat` - The bot sends a chart of the distribution of articles by year.
+   3. `return setup` - Returns the `news setup` and `arxiv setup` menu buttons.
 10. `/trans [phrase]` - The bot returns the translation of the phrase from Russian to English
 11. `/echo [text]` - The bot just reply with an echo text

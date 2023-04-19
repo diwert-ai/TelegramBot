@@ -50,7 +50,7 @@ class ArxivEngine:
             if results_lang != lang:
                 title = get_translated_text(result.title, destination=results_lang)
             message.append(title)
-            message.append('-------------------------------------------------------------------------------')
+            message.append('<b>--------------------</b>')
 
         return '\n'.join(message) if message else f'No articles on this topic!\n{query}'
 
@@ -80,7 +80,7 @@ class ArxivEngine:
                         title = get_translated_text(title, destination=results_lang)
                     message.append(title)
                     message.append(f'<b>type /abs_{n} to get the article abstract</b>')
-                    message.append('<b>---------------------------------------------------------------------</b>')
+                    message.append('<b>-------------------</b>')
                 yield '\n'.join(message)
 
     def set_batch_generator(self, topic, setup):
