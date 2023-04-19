@@ -269,7 +269,7 @@ on https://arxiv.org with the parameters that have been configured in `arxiv set
             for k, article in enumerate(self.arxiv_engine.search_results.results(), 1):
                 if k == n:
                     break
-            summary = article.summary.replace('\n', '') if article else 'article not found!'
+            summary = article.summary.replace('\n', ' ') if article else 'article not found!'
 
         else:
             summary = 'Search results not found! Try commands: garxiv or arxiv. ' +\
