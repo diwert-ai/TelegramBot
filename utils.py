@@ -1,6 +1,8 @@
 from string import digits
 import translators as ts
 from telegram import ReplyKeyboardMarkup
+import pandas as pd
+import matplotlib
 
 
 def setup_keyboard():
@@ -14,7 +16,7 @@ def gnews_keyboard():
 
 
 def garxiv_keyboard():
-    keys = [['next 5 articles', 'return to setup']]
+    keys = [['next 5 articles', 'diagram stat', 'return to setup']]
     return ReplyKeyboardMarkup(keys)
 
 
@@ -32,3 +34,11 @@ def get_translated_text(text, destination='en'):
         translated_text = f'<b>[Error occurred while translating: "{e}"]</b>\n{text}'
 
     return translated_text
+
+
+def store_diagram(articles):
+    matplotlib.use('agg')
+    df = pd.DataFrame([vars(article) for article in articles])
+    df = df[['title', 'published']]
+    fig = df['published'].groupby(df['published'].dt.year).count().plot(kind='bar').get_figure()
+    fig.savefig('diag.png')

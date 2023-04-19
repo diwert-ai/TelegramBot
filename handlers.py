@@ -1,4 +1,5 @@
-from utils import is_numeric, get_translated_text, setup_keyboard, gnews_keyboard, garxiv_keyboard
+from utils import is_numeric, get_translated_text, setup_keyboard
+from utils import gnews_keyboard, garxiv_keyboard, store_diagram
 
 from db.userdata_db import UserDataDB
 from engines.bullscows import BullsAndCowsEngine
@@ -279,6 +280,22 @@ again start with the first article.
         update.message.reply_text(summary)
         update.message.reply_text(get_translated_text(summary, destination='ru'))
 
+    def send_diagram_stat(self, update, context):
+        articles = []
+        if self.arxiv_engine.search_results:
+            for article in self.arxiv_engine.search_results.results():
+                articles.append(article)
+            if articles:
+                store_diagram(articles)
+                update.message.bot.send_photo(update.message.chat.id,
+                                              open('diag.png', 'rb'),
+                                              caption='Published by year')
+            else:
+                update.message.reply_text('Articles not found! Try again!')
+        else:
+            update.message.reply_text('Search results not found! Try again!')
+
+
     @staticmethod
     def echo(update, context):
         print('Echo event message received!')
@@ -324,5 +341,6 @@ again start with the first article.
 
         ops = {'next 5 news': self.next_5_news,
                'next 5 articles': self.next_5_articles,
-               'return to setup': self.return_setup}
+               'return to setup': self.return_setup,
+               'diagram stat': self.send_diagram_stat}
         ops.get(text, self.just_translation)(update, context)
