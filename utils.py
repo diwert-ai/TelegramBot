@@ -40,5 +40,7 @@ def store_diagram(articles):
     matplotlib.use('agg')
     df = pd.DataFrame([vars(article) for article in articles])
     df = df[['title', 'published']]
-    fig = df['published'].groupby(df['published'].dt.year).count().plot(kind='bar').get_figure()
+    df_count = df['published'].groupby(df['published'].dt.year).count()
+    print(df_count)
+    fig = df_count.plot(kind='bar').get_figure()
     fig.savefig('diag.png')
