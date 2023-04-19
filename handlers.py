@@ -282,7 +282,7 @@ on https://arxiv.org with the parameters that have been configured in `arxiv set
             arxiv_setup = self.user_data_db.get_arxiv_setup(username)
         results_lang = arxiv_setup['results_lang']
         if results_lang != 'en':
-            update.message.reply_text(get_translated_text(summary, destination=results_lang))
+            update.message.reply_text(get_translated_text(summary, destination=results_lang), parse_mode='html')
 
     def send_diagram_stat(self, update, context):
         articles = []
