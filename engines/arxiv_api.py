@@ -56,7 +56,7 @@ class ArxivEngine:
 
     def batching(self, batch_size=5, results_lang='ru', lang='en'):
         total_articles = len(list(self.search_results.results()))
-        start_line = f'<b>total articles: {total_articles}</b>'
+        start_line = f'<b>Total articles: {total_articles}</b>'
         print(start_line)
         if not total_articles:
             while True:
@@ -79,7 +79,7 @@ class ArxivEngine:
                     if results_lang != lang:
                         title = get_translated_text(title, destination=results_lang)
                     message.append(title)
-                    message.append(f'<b>type /abs_{n} to get the article abstract</b>')
+                    message.append(f'<b>Type /abs_{n} to get the article abstract</b>')
                     message.append('<b>-------------------</b>')
                 yield '\n'.join(message)
 

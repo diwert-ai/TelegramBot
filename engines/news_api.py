@@ -34,7 +34,7 @@ class NewsAPIEngine:
         if status == 'error':
             return data['message']
         total_results = data['totalResults']
-        message.append(f'status: {status}\ntotal results: {total_results}')
+        message.append(f'Status: {status}\nTotal results: {total_results}')
         articles = data['articles']
         for article in articles[:5]:
             title = article['title']
@@ -55,7 +55,7 @@ class NewsAPIEngine:
 
         total_results = news_data["totalResults"]
         articles = news_data['articles']
-        start_line = f'status: {status}\ntotal results: {total_results}'
+        start_line = f'Status: {status}\nTotal results: {total_results}'
         print(start_line)
         if not total_results:
             while True:
