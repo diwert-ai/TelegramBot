@@ -29,7 +29,8 @@ class NewsAPIEngine:
         topic_lang, headlines_lang = setup['topic_lang'], setup['headlines_lang']
         if topic_lang != lang:
             topic = get_translated_text(topic, destination=lang)
-        data, message = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang), []
+        message = [f'I was trying search articles by query "{topic}"...']
+        data = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang)
         status = data['status']
         if status == 'error':
             return data['message']
@@ -44,7 +45,7 @@ class NewsAPIEngine:
                 title = get_translated_text(title, destination=headlines_lang)
             message.append(title)
             # message.append('---------------------------')
-        return '\n'.join(message) if message else 'no news on this topic'
+        return '\n'.join(message) if message else 'No news on this topic!'
 
     @staticmethod
     def batching(news_data, batch_size=5, headlines_lang='ru', lang='en'):
@@ -82,3 +83,4 @@ class NewsAPIEngine:
             topic = get_translated_text(topic, destination=lang)
         news_data = self.run_query(topic, date_from=date_from, sort_by=sort_by, lang=lang)
         self.batch_generator = self.batching(news_data, headlines_lang=headlines_lang, lang=lang)
+        return topic

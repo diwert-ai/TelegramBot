@@ -192,7 +192,8 @@ on https://arxiv.org with the parameters that have been configured in `arxiv set
                 news_setup = context.user_data['news_setup']
             else:
                 news_setup = self.user_data_db.get_news_setup(username)
-            self.news_engine.set_batch_generator(user_string, news_setup)
+            query = self.news_engine.set_batch_generator(user_string, news_setup)
+            update.message.reply_text(f'I am trying search articles by query "{query}"...', parse_mode='html')
             self.next_5_news(update, context)
         else:
             message = 'Enter topic: /gnews [topic]!'
@@ -324,11 +325,11 @@ on https://arxiv.org with the parameters that have been configured in `arxiv set
         else:
             message = 'Enter text to translate!'
 
-        update.message.reply_text(message)
+        update.message.reply_text(message, parse_mode='html')
 
     @staticmethod
     def just_translation(update, context):
-        update.message.reply_text(get_translated_text(update.message.text))
+        update.message.reply_text(get_translated_text(update.message.text), parse_mode='html')
 
     def text_message_wrapper(self, update, context):
         text = update.message.text
