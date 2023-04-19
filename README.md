@@ -72,6 +72,7 @@ class Config:
     news_api_key = 'api key for newsapi.org service'
 ```
 8. Run bot (in virtual environment): `python bot.py`
+9. More info how to configure ubuntu linux VDS [here](conf.md)
 
 ## Bot commands
 1. `/help` - The bot show list of commands
